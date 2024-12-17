@@ -26,11 +26,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           NavigationDestination(
             icon: Icon(Icons.notifications),
-            label: 'Home',
+            label: 'Notifications',
           ),
           NavigationDestination(
-            icon: Icon(Icons.account_box_sharp),
-            label: 'Home',
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
           ),
         ],
       ),
