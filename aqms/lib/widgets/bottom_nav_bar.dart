@@ -21,15 +21,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
         },
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home),
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications),
+            selectedIcon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications_none_outlined),
             label: 'Notifications',
           ),
           NavigationDestination(
-            icon: Icon(Icons.account_circle),
+            selectedIcon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_circle_outlined),
             label: 'Account',
           ),
         ],
