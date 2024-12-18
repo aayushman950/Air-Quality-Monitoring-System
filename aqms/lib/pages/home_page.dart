@@ -1,3 +1,4 @@
+import 'package:aqms/widgets/aqi_gauge.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,10 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("data"),
-        ),
-        body: Center(child: Text("Home Page")),
+        body: AQIGauge(),
       ),
     );
   }
