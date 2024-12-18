@@ -1,6 +1,6 @@
 import 'package:aqms/themes/dark_theme.dart';
 import 'package:aqms/themes/light_theme.dart';
-import 'package:aqms/themes/theme_model.dart';
+import 'package:aqms/models/theme_model.dart';
 import 'package:aqms/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
