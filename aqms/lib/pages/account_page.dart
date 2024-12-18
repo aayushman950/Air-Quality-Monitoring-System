@@ -1,4 +1,4 @@
-import 'package:aqms/themes/theme_model.dart';
+import 'package:aqms/models/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,7 @@ class AccountPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: ListTile(
-          title: Text("Toggle Theme"),
+          title: const Text("Toggle Theme"),
           trailing: Switch(
             value: Provider.of<ThemeModel>(context).isDarkMode,
             onChanged: (value) {
