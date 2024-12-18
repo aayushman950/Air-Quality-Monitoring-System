@@ -1,4 +1,4 @@
-import 'package:aqms/widgets/aqi_gauge.dart';
+import 'package:aqms/widgets/aqi_gauge_and_status.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,9 +7,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: AQIGauge(),
-      ),
+      child: Scaffold(body: AQIGaugeAndStatus()),
     );
   }
 }
