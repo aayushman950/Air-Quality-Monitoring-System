@@ -5,8 +5,10 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Text("Account Page"),
+    return SafeArea(
+      child: Scaffold(
+        body: Center(child: Text("Account Page")),
+      ),
     );
   }
 }
