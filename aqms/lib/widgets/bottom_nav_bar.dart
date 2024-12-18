@@ -26,6 +26,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             currentPageIndex = index;
           });
         },
+
+        backgroundColor: Colors.transparent,
         destinations: [
           NavigationDestination(
             selectedIcon: Icon(Icons.home, size: 40),

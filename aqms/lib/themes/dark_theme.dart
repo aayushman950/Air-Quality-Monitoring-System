@@ -5,7 +5,7 @@ final ThemeData darkTheme = ThemeData(
   primarySwatch: Colors.blue,
   scaffoldBackgroundColor: Colors.black,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.transparent,
     foregroundColor: Colors.white,
   ),
 );
