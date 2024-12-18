@@ -1,3 +1,5 @@
+import 'package:aqms/themes/dark_theme.dart';
+import 'package:aqms/themes/light_theme.dart';
 import 'package:aqms/themes/theme_model.dart';
 import 'package:aqms/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
       builder: (context, theme, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: theme.isDarkMode ? ThemeData.dark() : ThemeData.light(),
+          theme: theme.isDarkMode ? darkTheme : lightTheme,
           home: BottomNavBar(),
         );
       },
