@@ -1,3 +1,6 @@
+import 'package:aqms/pages/account_page.dart';
+import 'package:aqms/pages/home_page.dart';
+import 'package:aqms/pages/notifications_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -9,9 +12,13 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentPageIndex = 0;
+
+  final List pages = [HomePage(), NotificationsPage(), AccountPage()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: pages[currentPageIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
         onDestinationSelected: (index) {
