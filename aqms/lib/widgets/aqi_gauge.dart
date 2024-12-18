@@ -13,7 +13,6 @@ class AQIGauge extends StatelessWidget {
         RadialAxis(
           axisLineStyle: AxisLineStyle(
             thickness: 30,
-            cornerStyle: CornerStyle.bothCurve,
           ),
           startAngle: 180,
           endAngle: 0,
@@ -73,8 +72,11 @@ class AQIGauge extends StatelessWidget {
           ],
           annotations: [
             GaugeAnnotation(
-              widget: Container(
-                child: Text.rich(
+              widget: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("AQI", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                  Text.rich(
                   TextSpan(
                     children: [
                       TextSpan(
@@ -94,6 +96,8 @@ class AQIGauge extends StatelessWidget {
                     ],
                   ),
                 ),
+                ],
+                
               ),
               angle: 270,
               positionFactor: 0.2,
