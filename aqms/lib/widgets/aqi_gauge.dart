@@ -8,6 +8,8 @@ class AQIGauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int aqiRating = 167;
+
     return SfRadialGauge(
       axes: [
         RadialAxis(
@@ -60,7 +62,7 @@ class AQIGauge extends StatelessWidget {
           ],
           pointers: [
             MarkerPointer(
-              value: 90,
+              value: aqiRating.toDouble(),
               color: Provider.of<ThemeModel>(context).isDarkMode
                   ? Colors.white
                   : Colors.black,
@@ -80,7 +82,7 @@ class AQIGauge extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: '90', // The number part
+                        text: aqiRating.toString(), // The number part
                         style: TextStyle(
                           fontSize: 50, // Larger font size for the number
                           fontWeight: FontWeight.bold,
