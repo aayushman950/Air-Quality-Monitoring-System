@@ -9,9 +9,6 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Account Page"),
-        ),
         body: ListTile(
           title: Text("Toggle Theme"),
           trailing: Switch(

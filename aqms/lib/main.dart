@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeModel>(
       builder: (context, theme, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: theme.isDarkMode ? ThemeData.dark() : ThemeData.light(),
           home: BottomNavBar(),
         );
