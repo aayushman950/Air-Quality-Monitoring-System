@@ -1,8 +1,15 @@
+import 'package:aqms/themes/theme_model.dart';
 import 'package:aqms/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,9 +17,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BottomNavBar(),
+    return Consumer<ThemeModel>(
+      builder: (context, theme, child) {
+        return MaterialApp(
+          theme: theme.isDarkMode ? ThemeData.dark() : ThemeData.light(),
+          home: BottomNavBar(),
+        );
+      },
     );
   }
 }

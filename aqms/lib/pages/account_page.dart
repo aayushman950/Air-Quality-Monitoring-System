@@ -1,4 +1,6 @@
+import 'package:aqms/themes/theme_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -7,7 +9,18 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(child: Text("Account Page")),
+        appBar: AppBar(
+          title: Text("Account Page"),
+        ),
+        body: ListTile(
+          title: Text("Toggle Theme"),
+          trailing: Switch(
+            value: Provider.of<ThemeModel>(context).isDarkMode,
+            onChanged: (value) {
+              Provider.of<ThemeModel>(context, listen: false).toggleTheme();
+            },
+          ),
+        ),
       ),
     );
   }
