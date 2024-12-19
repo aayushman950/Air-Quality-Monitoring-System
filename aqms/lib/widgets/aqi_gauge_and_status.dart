@@ -10,10 +10,10 @@ class AQIGaugeAndStatus extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: [
-        AQIGauge(),
+        AQIGauge(aqiRating: 20,),
         Positioned(
           bottom: 40,
-          child: AQIStatus(),
+          child: AQIStatus(airStatus: 'Good',),
         ),
       ],
     );

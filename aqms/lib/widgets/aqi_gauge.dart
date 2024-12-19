@@ -4,12 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class AQIGauge extends StatelessWidget {
-  const AQIGauge({super.key});
+  final int aqiRating;
+
+  const AQIGauge({super.key, required this.aqiRating});
 
   @override
   Widget build(BuildContext context) {
-    int aqiRating = 167;
-
     return Container(
       height: 400,
       child: SfRadialGauge(

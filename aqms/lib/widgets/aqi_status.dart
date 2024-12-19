@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AQIStatus extends StatelessWidget {
-  const AQIStatus({super.key});
+  const AQIStatus({super.key, required this.airStatus});
+
+  final String airStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class AQIStatus extends StatelessWidget {
           style: TextStyle(fontSize: 25),
         ),
         Text(
-          "GOOD",
+          airStatus,
           style: TextStyle(
             fontSize: 50,
             fontWeight: FontWeight.bold,
