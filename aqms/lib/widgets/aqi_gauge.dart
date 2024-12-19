@@ -13,6 +13,8 @@ class AQIGauge extends StatelessWidget {
     return Container(
       height: 400,
       child: SfRadialGauge(
+        animationDuration: 2000,
+        enableLoadingAnimation: true,
         axes: [
           RadialAxis(
             radiusFactor: 0.95,
@@ -65,6 +67,9 @@ class AQIGauge extends StatelessWidget {
             ],
             pointers: [
               MarkerPointer(
+                enableAnimation: true,
+                animationType: AnimationType.elasticOut,
+                animationDuration: 3000,
                 value: aqiRating.toDouble(),
                 color: Provider.of<ThemeModel>(context).isDarkMode
                     ? Colors.white
