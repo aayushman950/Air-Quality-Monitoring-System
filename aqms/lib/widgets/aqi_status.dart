@@ -9,6 +9,7 @@ class AQIStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     String aqiStatus = "Unknown";
     Color aqiStatusColor = Colors.black;
+    Widget aqiStatusTextWidget;
 
     void aqiStatusCalculator(int aqiRating) {
       if (aqiRating >= 0 && aqiRating <= 50) {
@@ -50,20 +51,57 @@ class AQIStatus extends StatelessWidget {
     aqiStatusCalculator(aqiRating);
     aqiStatusColorCalculator(aqiRating);
 
+    if (aqiStatus == "UNHEALTHY FOR SENSITIVE GROUPS") {
+      aqiStatusTextWidget = Column(
+        children: [
+          Text(
+            "UNHEALTHY",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+              color: aqiStatusColor,
+            ),
+          ),
+          Text(
+            "for sensitive groups",
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: aqiStatusColor,
+            ),
+          ),
+        ],
+      );
+    } else if(aqiStatus == "VERY UNHEALTHY") {
+      aqiStatusTextWidget = Text(
+        aqiStatus,
+        style: TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+          color: aqiStatusColor,
+        ),
+      );
+    } else {
+      aqiStatusTextWidget = Text(
+        aqiStatus,
+        style: TextStyle(
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
+          color: aqiStatusColor,
+        ),
+      );
+    }
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        Text(
+        const Text(
           "Air Quality is",
           style: TextStyle(fontSize: 25),
         ),
-        Text(
-          aqiStatus,
-          style: TextStyle(
-            fontSize: 50,
-            fontWeight: FontWeight.bold,
-            color: aqiStatusColor,
-          ),
+        SizedBox(
+          height: 100,
+          child: aqiStatusTextWidget,
         ),
       ],
     );

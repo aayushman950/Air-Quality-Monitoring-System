@@ -10,8 +10,6 @@ class AQIGaugeAndStatus extends StatelessWidget {
     required this.aqiRating,
   });
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -21,7 +19,7 @@ class AQIGaugeAndStatus extends StatelessWidget {
           aqiRating: aqiRating,
         ),
         Positioned(
-          bottom: 40,
+          bottom: 0,
           child: AQIStatus(aqiRating: aqiRating),
         ),
       ],
