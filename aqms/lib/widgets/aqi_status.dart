@@ -66,7 +66,6 @@ class AQIStatus extends StatelessWidget {
             "for sensitive groups",
             style: TextStyle(
               fontSize: 25,
-              fontWeight: FontWeight.bold,
               color: aqiStatusColor,
             ),
           ),
