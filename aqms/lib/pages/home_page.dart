@@ -8,6 +8,24 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.place),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                "Sensor 1",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          centerTitle: true,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: AQIGaugeAndStatus(
