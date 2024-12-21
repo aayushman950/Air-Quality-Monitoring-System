@@ -1,4 +1,5 @@
 import 'package:aqms/widgets/aqi_gauge_and_status.dart';
+import 'package:aqms/widgets/pm_tile.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -28,8 +29,13 @@ class HomePage extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: AQIGaugeAndStatus(
-            aqiRating: 140,
+          child: Column(
+            children: [
+              AQIGaugeAndStatus(
+                aqiRating: 140,
+              ),
+              PMTile(),
+            ],
           ),
         ),
       ),
