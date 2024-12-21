@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 
 class PMTile extends StatelessWidget {
-  const PMTile({super.key});
+  final int pmType, pmValue;
+
+  const PMTile({super.key, required this.pmType, required this.pmValue});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-      color: Colors.amber,
-
-        borderRadius: BorderRadius.circular(25)
+        color: Colors.amber,
+        borderRadius: BorderRadius.circular(25),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Column(
           children: [
             Text(
-              "PM2.5",
+              "PM${pmType}",
               style: TextStyle(
-                fontSize: 30,
+                fontSize: 25,
               ),
             ),
             Text(
-              "100",
-              style: TextStyle(
+              pmValue.toString(),
+              style: const TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),

@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
               AQIGaugeAndStatus(
                 aqiRating: 140,
               ),
-              PMTile(),
+              PMTile(pmType: 10, pmValue: 23,),
             ],
           ),
         ),
