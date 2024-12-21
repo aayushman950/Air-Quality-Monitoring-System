@@ -8,10 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // shared preference is used to keep the app state persist even after restarting.
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+  // getting the shared instance created in theme_model.dart
   final isDark = sharedPreferences.getBool('isDark') ?? false;
 
   runApp(
+    // wrap the entire app state with theme model because the entire app needs to access the theme state(dark/light mode)
     ChangeNotifierProvider(
       create: (context) => ThemeModel(isDark),
       child: MyApp(isDark: isDark,),
@@ -20,7 +25,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final bool isDark;
+  final bool isDark;  // a variable to store shared preference
 
   const MyApp({
     super.key,

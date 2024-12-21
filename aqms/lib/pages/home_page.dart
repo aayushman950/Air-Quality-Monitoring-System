@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: AQIGaugeAndStatus(
-          aqiRating: 180,
+          aqiRating: 140,
         ),
       ),
     );

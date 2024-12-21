@@ -3,6 +3,14 @@ import 'package:aqms/pages/home_page.dart';
 import 'package:aqms/pages/notifications_page.dart';
 import 'package:flutter/material.dart';
 
+/*
+
+This is the Bottom Navigation Bar
+
+{This widget is used in main.dart}
+
+*/
+
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
@@ -28,7 +36,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         },
 
         backgroundColor: Colors.transparent,
-        destinations: [
+        destinations: const [
           NavigationDestination(
             selectedIcon: Icon(Icons.home, size: 40),
             icon: Icon(Icons.home_outlined, size: 30),

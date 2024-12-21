@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
 
-class AQIStatus extends StatelessWidget {
-  const AQIStatus({super.key, required this.aqiRating});
+/*
 
+This widget calculates and shows the current air quality status like Air Quality is "GOOD", "MODERATE" etc. It takes AQI Rating as Input.
+
+{ This widget is used in the AQIGaugeAndStatus widget (aqi_gauge_and_status.dart) }
+
+*/
+
+class AQIStatus extends StatelessWidget {
   final int aqiRating;
+
+  const AQIStatus({super.key, required this.aqiRating});
 
   @override
   Widget build(BuildContext context) {
+    /*
+    
+    INITIALIZE VARIABLES
+    
+    */
     String aqiStatus = "Unknown";
     Color aqiStatusColor = Colors.black;
     Widget aqiStatusTextWidget;
 
+    /* 
+
+    FUNCTIONS
+    
+    */
+
+    // function to set aqiStatus according to aqiRating
     void aqiStatusCalculator(int aqiRating) {
       if (aqiRating >= 0 && aqiRating <= 50) {
         aqiStatus = "GOOD";
@@ -29,6 +49,7 @@ class AQIStatus extends StatelessWidget {
       }
     }
 
+    // function that sets aqiStatusColor according to aqiRating
     void aqiStatusColorCalculator(int aqiRating) {
       if (aqiRating >= 0 && aqiRating <= 50) {
         aqiStatusColor = Colors.green;
@@ -48,9 +69,12 @@ class AQIStatus extends StatelessWidget {
     }
 
     // running the functions
+    // need to run aqiStatusCalculator before any statements that require aqiStatus (otherwise aqiStatus will always be "Unknown")
     aqiStatusCalculator(aqiRating);
     aqiStatusColorCalculator(aqiRating);
 
+    // styling the aqiStatusTextWidget text according to aqiStatus
+    // this was done because "UNHEALTHY FOR SENSITIVE GROUPS" and "VERY UNHEALTHY" were overflowing out of the screen.
     if (aqiStatus == "UNHEALTHY FOR SENSITIVE GROUPS") {
       aqiStatusTextWidget = Column(
         children: [
@@ -71,7 +95,7 @@ class AQIStatus extends StatelessWidget {
           ),
         ],
       );
-    } else if(aqiStatus == "VERY UNHEALTHY") {
+    } else if (aqiStatus == "VERY UNHEALTHY") {
       aqiStatusTextWidget = Text(
         aqiStatus,
         style: TextStyle(
@@ -91,6 +115,7 @@ class AQIStatus extends StatelessWidget {
       );
     }
 
+    // the complete widget
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [

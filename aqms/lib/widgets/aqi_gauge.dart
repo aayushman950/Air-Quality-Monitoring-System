@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+/*
+
+This widget takes AQI Rating as Input and displays a gauge and AQI Rating according to the AQI Rating.
+
+The gauge and animation is made using the syncfusion_flutter_gauges package.
+
+{ This widget is used in the AQIGaugeAndStatus widget (aqi_gauge_and_status.dart) }
+
+*/
+
 class AQIGauge extends StatelessWidget {
   final int aqiRating;
 
@@ -18,7 +28,7 @@ class AQIGauge extends StatelessWidget {
         axes: [
           RadialAxis(
             radiusFactor: 0.95,
-            axisLineStyle: AxisLineStyle(
+            axisLineStyle: const AxisLineStyle(
               thickness: 30,
             ),
             startAngle: 180,
@@ -80,12 +90,14 @@ class AQIGauge extends StatelessWidget {
                 markerOffset: 40,
               )
             ],
+
+            // The text inside the Gauge
             annotations: [
               GaugeAnnotation(
                 widget: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    const Text(
                       "AQI",
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -95,12 +107,12 @@ class AQIGauge extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: aqiRating.toString(), // The number part
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 50, // Larger font size for the number
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          TextSpan(
+                          const TextSpan(
                             text: ' µg/m³', // The unit part
                             style: TextStyle(
                               fontSize: 20, // Smaller font size for the unit

@@ -9,6 +9,8 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
+        // a switch to switch between Dark/Light Mode
         body: ListTile(
           title: const Text("Toggle Theme"),
           trailing: Switch(
