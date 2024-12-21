@@ -7,7 +7,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(body: AQIGaugeAndStatus(aqiRating:150,)),
+      child: Scaffold(
+        body: AQIGaugeAndStatus(
+          aqiRating: 180,
+        ),
+      ),
     );
   }
 }
