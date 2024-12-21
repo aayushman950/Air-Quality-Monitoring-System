@@ -8,8 +8,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: AQIGaugeAndStatus(
-          aqiRating: 140,
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: AQIGaugeAndStatus(
+            aqiRating: 140,
+          ),
         ),
       ),
     );
