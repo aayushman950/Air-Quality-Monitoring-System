@@ -24,20 +24,17 @@ class AQIGaugeAndStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      child: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: [
-          AQIGauge(
-            aqiRating: aqiRating,
-          ),
-          Positioned(
-            bottom: 0,
-            child: AQIStatus(aqiRating: aqiRating),
-          ),
-        ],
-      ),
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children: [
+        AQIGauge(
+          aqiRating: aqiRating,
+        ),
+        Positioned(
+          bottom: 0,
+          child: AQIStatus(aqiRating: aqiRating),
+        ),
+      ],
     );
   }
 }
