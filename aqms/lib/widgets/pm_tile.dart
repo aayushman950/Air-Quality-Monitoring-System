@@ -2,6 +2,14 @@ import 'package:aqms/models/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
+/*
+
+TODO: Make onTap of InkWell go to detailed PM Screen
+
+*/
+
+
 class PMTile extends StatelessWidget {
   final num pmType;
   final int pmValue;
@@ -14,39 +22,45 @@ class PMTile extends StatelessWidget {
 
     bool isDarkMode = Provider.of<ThemeModel>(context).isDarkMode;
 
-    return Container(
-      width: screenWidth * 0.4,
-      height: 150,
-      decoration: BoxDecoration(
-          color: isDarkMode? Colors.black: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: isDarkMode? Colors.white.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
-              blurRadius: 12,
-              offset: const Offset(2, 2),
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      elevation: 6, // Adds elevation to give a Material design look
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25),
+        side: isDarkMode
+            ? BorderSide(color: Colors.grey.shade800, width: 1.5) // Add border in dark mode
+            : BorderSide.none,
+      ),
+      color: isDarkMode ? Colors.black : Colors.white,
+      shadowColor: isDarkMode ? Colors.white.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
+      child: InkWell(
+        onTap: () {}, // go to detailed PM screen
+        splashColor: Colors.grey.withAlpha(50),
+        child: Container(
+          width: screenWidth * 0.4,
+          height: 150,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "PM$pmType",
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                Text(
+                  pmValue.toString(),
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+              ],
             ),
-          ]),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "PM$pmType",
-                style: const TextStyle(
-                  fontSize: 25,
-                ),
-              ),
-              Text(
-                pmValue.toString(),
-                style: const TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
           ),
         ),
       ),
