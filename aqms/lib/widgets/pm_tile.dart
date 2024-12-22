@@ -1,4 +1,6 @@
+import 'package:aqms/models/theme_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PMTile extends StatelessWidget {
   final num pmType;
@@ -10,13 +12,21 @@ class PMTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
+    bool isDarkMode = Provider.of<ThemeModel>(context).isDarkMode;
+
     return Container(
       width: screenWidth * 0.4,
       height: 150,
       decoration: BoxDecoration(
-        color: Colors.grey.shade400,
-        borderRadius: BorderRadius.circular(25),
-      ),
+          color: isDarkMode? Colors.black: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode? Colors.white.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
+              blurRadius: 12,
+              offset: const Offset(2, 2),
+            ),
+          ]),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         child: Center(
@@ -26,14 +36,12 @@ class PMTile extends StatelessWidget {
               Text(
                 "PM$pmType",
                 style: const TextStyle(
-                  color: Colors.black,
                   fontSize: 25,
                 ),
               ),
               Text(
                 pmValue.toString(),
                 style: const TextStyle(
-                  color: Colors.black,
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),
