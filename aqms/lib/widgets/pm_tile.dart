@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 /*
 
-TODO: Make onTap of InkWell go to detailed PM Screen
+TO-DO: Make onTap of InkWell go to detailed PM Screen
 
 */
 
