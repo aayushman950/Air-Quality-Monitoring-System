@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.2
   syncfusion_flutter_gauges: ^28.1.33
   shared_preferences: ^2.3.4
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
