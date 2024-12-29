@@ -1,19 +1,24 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/air_quality_data.dart'; // Import the model
 
-class ApiService {
-  final String baseUrl = "http://127.0.0.1:5000"; // Replace with Flask backend URL
+class FetchLatestData {
+  static final String baseUrl = "http://10.0.2.2:5000"; // Replace with Flask backend URL
 
-  Future<List<AirQualityData>> fetchLatestData() async {
+  static Future<Map<String, dynamic>> getLatestData() async {
     final response = await http.get(Uri.parse('$baseUrl/latest'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body);
-      return jsonData.map((data) => AirQualityData.fromJson(data)).toList();
+      // Parse the JSON list
+      final List<dynamic> jsonResponse = json.decode(response.body) as List<dynamic>;
+
+      // Convert the list to a map, ensuring all values are treated as doubles
+      final Map<String, dynamic> data = {
+        for (var item in jsonResponse) item['field']: (item['value'] as num).toDouble()
+      };
+
+      return data;
     } else {
       throw Exception('Failed to fetch data: ${response.statusCode}');
     }
   }
 }
-
