@@ -53,9 +53,13 @@ class HomePage extends StatelessWidget {
                 final String rawTime = data['time'] ?? "";
 
                 // Parse the custom date format
-                final DateFormat inputFormat =
-                    DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
-                final DateTime parsedTime = inputFormat.parse(rawTime);
+                final DateFormat inputFormat = DateFormat(
+                    "EEE, dd MMM yyyy HH:mm:ss 'GMT'",
+                    'en_US'); // Parse the provided format
+                final DateTime parsedTime = inputFormat
+                    .parseUtc(rawTime)
+                    .toLocal(); // Convert to local time
+
                 final String formattedTime =
                     DateFormat('yyyy-MM-dd hh:mm a').format(parsedTime);
 
