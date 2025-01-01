@@ -1,3 +1,4 @@
+import 'package:aqms/pages/history_page.dart';
 import 'package:aqms/themes/dark_theme.dart';
 import 'package:aqms/themes/light_theme.dart';
 import 'package:aqms/models/theme_model.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme.isDarkMode ? darkTheme : lightTheme,
-          home: BottomNavBar(),
+          home: HistoryPage(),
         );
       },
     );
