@@ -44,7 +44,8 @@ def get_historical_data():
     """
     Endpoint to fetch historical data
     """
-    query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false)'
+    query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false) |> limit(n: 1000)'
+
     try:
         tables = query_api.query(query=query, org=org)
         results = []
