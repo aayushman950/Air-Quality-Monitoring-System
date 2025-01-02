@@ -52,7 +52,7 @@ def get_historical_data():
         for table in tables:
             for record in table.records:
                 # Check fields to only include AQI, PM2.5, and PM10
-                if record.get_field() in ["AQI", "PM25", "PM10"]:
+                if record.get_field() in ["AQI", "PM2.5", "PM10"]:
                     results.append({
                         "time": record.get_time(),
                         "field": record.get_field(),
