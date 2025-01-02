@@ -1,7 +1,8 @@
-import 'dart:convert';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -36,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Historical Data'),
+        title: const Text('Historical Data Charts'),
       ),
       body: FutureBuilder<List<AQIData>>(
         future: _futureHistoricalData,
@@ -55,20 +56,32 @@ class _HistoryPageState extends State<HistoryPage> {
             );
           } else {
             final List<AQIData> historicalData = snapshot.data!;
-            return ListView.builder(
-              itemCount: historicalData.length,
-              itemBuilder: (context, index) {
-                final AQIData record = historicalData[index];
-                return ListTile(
-                  leading: Icon(_getIconForField(record.field)),
-                  title: Text(record.field),
-                  subtitle: Text('Value: ${record.value.toStringAsFixed(2)}'),
-                  trailing: Text(
-                    _formatTime(record.time),
-                    style: const TextStyle(fontSize: 12),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildChart(
+                    data: historicalData
+                        .where((data) => data.field == "AQI")
+                        .toList(),
+                    title: "Air Quality Index (AQI)",
+                    color: Colors.blue,
                   ),
-                );
-              },
+                  _buildChart(
+                    data: historicalData
+                        .where((data) => data.field == "PM25")
+                        .toList(),
+                    title: "PM2.5 Levels",
+                    color: Colors.green,
+                  ),
+                  _buildChart(
+                    data: historicalData
+                        .where((data) => data.field == "PM10")
+                        .toList(),
+                    title: "PM10 Levels",
+                    color: Colors.red,
+                  ),
+                ],
+              ),
             );
           }
         },
@@ -76,23 +89,86 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  // Utility function to format time
-  String _formatTime(DateTime time) {
-    return '${time.day}/${time.month}/${time.year} ${time.hour}:${time.minute}';
-  }
-
-  // Utility function to return an appropriate icon for each field
-  IconData _getIconForField(String field) {
-    switch (field) {
-      case "AQI":
-        return Icons.air;
-      case "PM25":
-        return Icons.cloud;
-      case "PM10":
-        return Icons.cloud_circle;
-      default:
-        return Icons.help;
+  Widget _buildChart({
+    required List<AQIData> data,
+    required String title,
+    required Color color,
+  }) {
+    if (data.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text("No data available for $title."),
+      );
     }
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 200,
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(show: true),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        final int index = value.toInt();
+                        if (index >= 0 && index < data.length) {
+                          return Text(
+                            DateFormat('MM/dd').format(data[index].time),
+                            style: const TextStyle(fontSize: 10),
+                          );
+                        }
+                        return const Text('');
+                      },
+                    ),
+                  ),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(show: true),
+                minX: 0,
+                maxX: data.length.toDouble() - 1,
+                minY: 0,
+                maxY: data.map((e) => e.value).reduce((a, b) => a > b ? a : b),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: data
+                        .asMap()
+                        .entries
+                        .map((entry) =>
+                            FlSpot(entry.key.toDouble(), entry.value.value))
+                        .toList(),
+                    isCurved: true,
+                    color: color, // Single color instead of a list
+                    dotData: FlDotData(show: true),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: color
+                          .withOpacity(0.3), // Single color instead of a list
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
