@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -104,8 +105,9 @@ class AQIData {
   AQIData({required this.time, required this.field, required this.value});
 
   factory AQIData.fromJson(Map<String, dynamic> json) {
+    final dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
     return AQIData(
-      time: DateTime.parse(json['time']),
+      time: dateFormat.parse(json['time'], true).toLocal(),
       field: json['field'],
       value: (json['value'] as num).toDouble(),
     );
