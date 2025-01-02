@@ -94,7 +94,10 @@ class _HistoryPageState extends State<HistoryPage> {
     required String title,
     required Color color,
   }) {
-    if (data.isEmpty) {
+    // Get the latest 7 data points
+    final latestData = data.length > 7 ? data.sublist(data.length - 7) : data;
+
+    if (latestData.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text("No data available for $title."),
@@ -111,13 +114,21 @@ class _HistoryPageState extends State<HistoryPage> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(
+            height: 20,
+          ),
+          SizedBox(
             height: 200,
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(show: true),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true),
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 35,
+                      maxIncluded: false,
+                      minIncluded: false,
+                    ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -125,9 +136,9 @@ class _HistoryPageState extends State<HistoryPage> {
                       interval: 1,
                       getTitlesWidget: (value, meta) {
                         final int index = value.toInt();
-                        if (index >= 0 && index < data.length) {
+                        if (index >= 0 && index < latestData.length) {
                           return Text(
-                            DateFormat('MM/dd').format(data[index].time),
+                            DateFormat('MM/dd').format(latestData[index].time),
                             style: const TextStyle(fontSize: 10),
                           );
                         }
@@ -142,12 +153,14 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
                 borderData: FlBorderData(show: true),
                 minX: 0,
-                maxX: data.length.toDouble() - 1,
+                maxX: latestData.length.toDouble() - 1,
                 minY: 0,
-                maxY: data.map((e) => e.value).reduce((a, b) => a > b ? a : b),
+                maxY: latestData
+                    .map((e) => e.value)
+                    .reduce((a, b) => a > b ? a : b),
                 lineBarsData: [
                   LineChartBarData(
-                    spots: data
+                    spots: latestData
                         .asMap()
                         .entries
                         .map((entry) =>
