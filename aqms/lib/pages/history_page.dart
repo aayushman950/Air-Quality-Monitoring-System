@@ -68,7 +68,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                   _buildChart(
                     data: historicalData
-                        .where((data) => data.field == "PM25")
+                        .where((data) => data.field == "PM2.5")
                         .toList(),
                     title: "PM2.5 Levels",
                     color: Colors.green,
