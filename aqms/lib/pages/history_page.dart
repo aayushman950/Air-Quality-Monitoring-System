@@ -37,7 +37,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Historical Data Charts'),
+        title: const Text('Historical Data'),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<AQIData>>(
         future: _futureHistoricalData,

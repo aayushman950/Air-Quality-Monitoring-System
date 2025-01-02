@@ -43,9 +43,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Home',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.notifications, size: 40),
-            icon: Icon(Icons.notifications_none_outlined, size: 30),
-            label: 'Notifications',
+            selectedIcon: Icon(Icons.analytics, size: 40),
+            icon: Icon(Icons.analytics_outlined, size: 30),
+            label: 'History',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.account_circle, size: 40),
