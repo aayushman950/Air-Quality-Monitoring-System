@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme.isDarkMode ? darkTheme : lightTheme,
-          home: HistoryPage(),
+          home: const BottomNavBar(),
         );
       },
     );
