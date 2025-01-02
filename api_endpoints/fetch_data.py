@@ -44,14 +44,14 @@ def get_historical_data():
     """
     Endpoint to fetch historical data
     """
-    query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false) |> limit(n: 1000)'
-
+    query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false) |> limit(n: 100)'
     try:
         tables = query_api.query(query=query, org=org)
         results = []
 
         for table in tables:
             for record in table.records:
+                # Check fields to only include AQI, PM2.5, and PM10
                 if record.get_field() in ["AQI", "PM25", "PM10"]:
                     results.append({
                         "time": record.get_time(),
@@ -62,6 +62,7 @@ def get_historical_data():
         return jsonify(results), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # Run the Flask app
 if __name__ == '__main__':
