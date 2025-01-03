@@ -1,3 +1,7 @@
+# simulates sensor data 
+# every 10 seconds random values of aqi and pm arre sent to influxdb
+
+
 import random
 import datetime
 import datetime
