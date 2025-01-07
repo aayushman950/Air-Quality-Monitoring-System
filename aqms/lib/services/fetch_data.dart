@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class FetchLatestData {
   static final String baseUrl =
-      "http://10.0.2.2:5000"; // Replace with Flask backend URL
+      "http://10.0.2.2:5000"; 
 
   static Future<Map<String, dynamic>> getLatestData() async {
     final response = await http.get(Uri.parse('$baseUrl/latest'));

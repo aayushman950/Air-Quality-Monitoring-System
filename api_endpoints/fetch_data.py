@@ -44,7 +44,16 @@ def get_historical_data():
     """
     Endpoint to fetch historical data
     """
-    query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false) |> limit(n: 100)'
+    # query = f'from(bucket: "{bucket}") |> range(start: -7d) |> sort(columns: ["_time"], desc: false) |> limit(n: 100)'
+
+    query = f'''
+from(bucket: "{bucket}")
+  |> range(start: -7d)
+  |> filter(fn: (r) => r["_field"] == "AQI" or r["_field"] == "PM2.5" or r["_field"] == "PM10") 
+  |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+  |> sort(columns: ["_time"], desc: false)
+'''
+
     try:
         tables = query_api.query(query=query, org=org)
         results = []
