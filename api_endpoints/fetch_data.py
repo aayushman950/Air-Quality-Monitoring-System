@@ -7,8 +7,8 @@ app = Flask(__name__)
 # InfluxDB connection details
 bucket = "SensorData"
 org = "AQMS"
-token = "cnuD2krG9s06LeYhs2zty7ZDf08zjP_1LrpPymhtWL9Rn6FwTPyiO2iPr0fkwbYf16LaEI-E25CJLSGr6PcNeg=="  # Replace with your token
-url = "http://localhost:8086"  # Change if using a remote InfluxDB
+token = "cnuD2krG9s06LeYhs2zty7ZDf08zjP_1LrpPymhtWL9Rn6FwTPyiO2iPr0fkwbYf16LaEI-E25CJLSGr6PcNeg==" 
+url = "http://localhost:8086" 
 
 # Initialize InfluxDB client
 client = InfluxDBClient(url=url, token=token, org=org)

@@ -1,4 +1,3 @@
-import 'package:aqms/pages/history_page.dart';
 import 'package:aqms/themes/dark_theme.dart';
 import 'package:aqms/themes/light_theme.dart';
 import 'package:aqms/models/theme_model.dart';
