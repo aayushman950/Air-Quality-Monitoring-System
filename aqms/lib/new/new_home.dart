@@ -4,16 +4,16 @@ import 'package:aqms/widgets/aqi_gauge_and_status.dart';
 import 'package:aqms/widgets/both_pm_tile.dart';
 import 'package:aqms/new/csv_parser.dart';
 
-class HomePage extends StatefulWidget {
+class NewHome extends StatefulWidget {
   final String csvData; // CSV data passed to the widget
 
-  const HomePage({super.key, required this.csvData});
+  const NewHome({super.key, required this.csvData});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _NewHomeState createState() => _NewHomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NewHomeState extends State<NewHome> {
   late Future<Map<String, dynamic>> _latestDataFuture;
 
   @override

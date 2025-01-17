@@ -1,3 +1,4 @@
+import 'package:aqms/new/new_home.dart';
 import 'package:aqms/themes/dark_theme.dart';
 import 'package:aqms/themes/light_theme.dart';
 import 'package:aqms/models/theme_model.dart';
@@ -9,28 +10,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // shared preference is used to keep the app state persist even after restarting.
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  // getting the shared instance created in theme_model.dart
   final isDark = sharedPreferences.getBool('isDark') ?? false;
 
+  // Hardcoded CSV data (for simplicity, replace with actual data source if needed)
+  const String csvData = """
+result,table,_start,_stop,_time,_value,_field,_measurement,location,sensor
+_result,0,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T07:57:02Z,25.1,pm10,air_quality,Dhulikhel,raspberry
+_result,0,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T08:03:21Z,24,pm10,air_quality,Dhulikhel,raspberry
+_result,1,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T08:09:42Z,17.6,pm25,air_quality,Dhulikhel,raspberry
+_result,1,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T08:03:21Z,17.3,pm25,air_quality,Dhulikhel,raspberry
+""";
+
   runApp(
-    // wrap the entire app state with theme model because the entire app needs to access the theme state(dark/light mode)
     ChangeNotifierProvider(
       create: (context) => ThemeModel(isDark),
-      child: MyApp(isDark: isDark,),
+      child: MyApp(
+        isDark: isDark,
+        csvData: csvData, // Pass csvData here
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool isDark;  // a variable to store shared preference
+  final bool isDark;
+  final String csvData;
 
-  const MyApp({
-    super.key,
-    required this.isDark,
-  });
+  const MyApp({super.key, required this.isDark, required this.csvData});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme.isDarkMode ? darkTheme : lightTheme,
-          home: const BottomNavBar(),
+          home: BottomNavBar(csvData: csvData), // Pass csvData to BottomNavBar
         );
       },
     );
