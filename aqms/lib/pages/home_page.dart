@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package
 import 'package:aqms/widgets/aqi_gauge_and_status.dart';
 import 'package:aqms/widgets/both_pm_tile.dart';
-import 'package:aqms/new/csv_parser.dart';
+import 'package:aqms/services/csv_parser.dart';
 
 class HomePage extends StatefulWidget {
   final String csvData; // CSV data passed to the widget
