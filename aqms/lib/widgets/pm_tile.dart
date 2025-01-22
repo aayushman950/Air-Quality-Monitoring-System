@@ -12,7 +12,7 @@ TO-DO: Make onTap of InkWell go to detailed PM Screen
 
 class PMTile extends StatelessWidget {
   final num pmType;
-  final int pmValue;
+  final double pmValue;
 
   const PMTile({super.key, required this.pmType, required this.pmValue});
 
@@ -54,7 +54,7 @@ class PMTile extends StatelessWidget {
                 Text(
                   pmValue.toString(),
                   style: TextStyle(
-                    fontSize: 50,
+                    fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: isDarkMode ? Colors.white : Colors.black,
                   ),

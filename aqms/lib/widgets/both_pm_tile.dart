@@ -2,7 +2,7 @@ import 'package:aqms/widgets/pm_tile.dart';
 import 'package:flutter/material.dart';
 
 class BothPMTile extends StatelessWidget {
-  final int pmTwoPointFiveValue, pmTenValue;
+  final double pmTwoPointFiveValue, pmTenValue;
 
   const BothPMTile({
     super.key,

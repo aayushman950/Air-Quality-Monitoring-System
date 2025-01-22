@@ -1,4 +1,3 @@
-import 'package:aqms/new/new_home.dart';
 import 'package:aqms/themes/dark_theme.dart';
 import 'package:aqms/themes/light_theme.dart';
 import 'package:aqms/models/theme_model.dart';
@@ -27,7 +26,7 @@ _result,1,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T08:03:21Z,17.3,pm
       create: (context) => ThemeModel(isDark),
       child: MyApp(
         isDark: isDark,
-        csvData: csvData, // Pass csvData here
+         // Pass csvData here
       ),
     ),
   );
@@ -35,9 +34,8 @@ _result,1,2024-01-01T08:00:00Z,2026-01-01T20:00:01Z,2025-01-10T08:03:21Z,17.3,pm
 
 class MyApp extends StatelessWidget {
   final bool isDark;
-  final String csvData;
 
-  const MyApp({super.key, required this.isDark, required this.csvData});
+  const MyApp({super.key, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +44,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme.isDarkMode ? darkTheme : lightTheme,
-          home: BottomNavBar(csvData: csvData), // Pass csvData to BottomNavBar
+          home: BottomNavBar(), // Pass csvData to BottomNavBar
         );
       },
     );

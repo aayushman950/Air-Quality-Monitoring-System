@@ -1,48 +1,29 @@
+import 'package:aqms/services/fetch_cloud_final.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import intl package
 import 'package:aqms/widgets/aqi_gauge_and_status.dart';
 import 'package:aqms/widgets/both_pm_tile.dart';
-import 'package:aqms/services/csv_parser.dart';
 
 class HomePage extends StatefulWidget {
-  final String csvData; // CSV data passed to the widget
-
-  const HomePage({super.key, required this.csvData});
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<Map<String, dynamic>> _latestDataFuture;
+  late Future<Map<String, dynamic>> latestData;
 
   @override
   void initState() {
     super.initState();
-    _latestDataFuture = fetchLatestData();
-  }
-
-  Future<Map<String, dynamic>> fetchLatestData() async {
-    try {
-      // Parse the CSV data to fetch PM values
-      final latestValues = CsvParser.getLatestValues(widget.csvData);
-
-      // Construct a map with the required data
-      return {
-        'PM10': double.tryParse(latestValues['pm10'] ?? '0') ?? 0.0,
-        'PM2.5': double.tryParse(latestValues['pm25'] ?? '0') ?? 0.0,
-        'AQI': 50.0, // Placeholder AQI value (replace with actual calculation if needed)
-        'time': DateTime.now().toUtc().toString(), // Add current time as placeholder
-      };
-    } catch (e) {
-      throw Exception("Failed to fetch latest data: $e");
-    }
+    latestData = fetchData();
   }
 
   Future<void> _refreshData() async {
     // Re-fetch the data and update the state
     setState(() {
-      _latestDataFuture = fetchLatestData();
+      latestData = fetchData();
     });
   }
 
@@ -71,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: FutureBuilder<Map<String, dynamic>>(
-              future: _latestDataFuture,
+              future: latestData,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -83,23 +64,25 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (snapshot.hasData) {
-                  final data = snapshot.data!;
-                  final double aqi = data['AQI'] ?? 0.0;
-                  final double pm10 = data['PM10'] ?? 0.0;
-                  final double pmTwoPointFive = data['PM2.5'] ?? 0.0;
-                  final String rawTime = data['time'] ?? "";
+                  // Log fetched data
+                  print('Fetched Data: ${snapshot.data}');
 
-                  // Format the current or retrieved timestamp
-                  final String formattedTime =
-                      DateFormat('yyyy/MM/dd - hh:mm a').format(DateTime.parse(rawTime).toLocal());
+                  var pm10 = snapshot.data?['pm10'];
+                  var pm25 = snapshot.data?['pm25'];
+                  var aqi = snapshot.data?['pm25_aqi'];
+
+                  if (pm10 != null) pm10 = double.parse(pm10);
+                  if (pm25 != null) pm25 = double.parse(pm25);
+
+                  final formattedTime =
+                      ""; // Replace with formatted timestamp if available.
 
                   return ListView(
-                    // ListView is required for RefreshIndicator to work
                     children: [
-                      AQIGaugeAndStatus(aqiRating: aqi.toInt()),
+                      AQIGaugeAndStatus(aqiRating: aqi ?? 0),
                       BothPMTile(
-                        pmTwoPointFiveValue: pmTwoPointFive.toInt(),
-                        pmTenValue: pm10.toInt(),
+                        pmTwoPointFiveValue: pm25 ?? 0,
+                        pmTenValue: pm10 ?? 0,
                       ),
                       const SizedBox(height: 30),
                       Center(

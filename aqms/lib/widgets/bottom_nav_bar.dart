@@ -12,9 +12,8 @@ This is the Bottom Navigation Bar
 */
 
 class BottomNavBar extends StatefulWidget {
-  final String csvData;
 
-  const BottomNavBar({super.key, required this.csvData});
+  const BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -30,7 +29,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     // Pass csvData to HomePage
     pages = [
-      HomePage(csvData: widget.csvData),
+      HomePage(),
       HistoryPage(), // If needed, pass csvData or other parameters
       AccountPage(), // Adjust constructor as required
     ];
