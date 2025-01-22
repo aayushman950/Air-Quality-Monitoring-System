@@ -52,8 +52,8 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Column(
                 children: [
                   _buildChart(
-                    data: pm10History,
-                    title: "PM10 Levels",
+                    data: pm25AqiHistory,
+                    title: "AQI Levels",
                     color: Colors.red,
                   ),
                   _buildChart(
@@ -62,8 +62,8 @@ class _HistoryPageState extends State<HistoryPage> {
                     color: Colors.green,
                   ),
                   _buildChart(
-                    data: pm25AqiHistory,
-                    title: "PM2.5 AQI",
+                    data: pm10History,
+                    title: "PM10 AQI",
                     color: Colors.blue,
                   ),
                 ],
@@ -124,9 +124,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       getTitlesWidget: (value, meta) {
                         final int index = value.toInt();
                         if (index >= 0 && index < data.length) {
+                          // Reverse the index to display labels in reverse order
+                          final reversedIndex = data.length - 1 - index;
                           return Text(
-                            DateFormat('MM/dd').format(
-                              DateTime.parse(data[index]['timestamp']),
+                            DateFormat.Hm().format(
+                              DateTime.parse(data[reversedIndex]['timestamp']),
                             ),
                             style: const TextStyle(fontSize: 10),
                           );
