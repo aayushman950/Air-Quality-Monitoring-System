@@ -67,12 +67,9 @@ class _HomePageState extends State<HomePage> {
                   // Log fetched data
                   print('Fetched Data: ${snapshot.data}');
 
-                  var pm10 = snapshot.data?['pm10'];
-                  var pm25 = snapshot.data?['pm25'];
-                  var aqi = snapshot.data?['pm25_aqi'];
-
-                  if (pm10 != null) pm10 = double.parse(pm10);
-                  if (pm25 != null) pm25 = double.parse(pm25);
+                  var pm10 = snapshot.data?['pm10'] as double?;
+                  var pm25 = snapshot.data?['pm25'] as double?;
+                  var aqi = snapshot.data?['pm25_aqi'] as int?;
 
                   final formattedTime =
                       ""; // Replace with formatted timestamp if available.

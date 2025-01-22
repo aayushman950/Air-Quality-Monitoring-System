@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> fetchData() async {
   final url =
-      "https://mr14920914789139185.pythonanywhere.com/read?from_date=2024-01-10T08:09:41Z&to_date=2026-01-01T20:00:01Z";
+      "https://mr14920914789139185.pythonanywhere.com/read?from_date=2024-01-01T08:00:00Z&to_date=2026-01-01T20:00:01Z";
 
   final response = await http.get(Uri.parse(url));
 
@@ -30,27 +30,58 @@ Future<Map<String, dynamic>> fetchData() async {
       List<List<String>> pm25Rows =
           dataRows.where((row) => row[6].trim() == 'pm25').toList();
 
-      List<String>? latestPm10Row = pm10Rows.isNotEmpty
-          ? pm10Rows.reduce((a, b) =>
-              DateTime.parse(a[4].trim()).isAfter(DateTime.parse(b[4].trim()))
-                  ? a
-                  : b)
+      // Sort rows by timestamp in descending order
+      pm10Rows.sort((a, b) =>
+          DateTime.parse(b[4].trim()).compareTo(DateTime.parse(a[4].trim())));
+      pm25Rows.sort((a, b) =>
+          DateTime.parse(b[4].trim()).compareTo(DateTime.parse(a[4].trim())));
+
+      // Get latest values
+      List<String>? latestPm10Row = pm10Rows.isNotEmpty ? pm10Rows.first : null;
+      List<String>? latestPm25Row = pm25Rows.isNotEmpty ? pm25Rows.first : null;
+
+      double? latestPm10 = latestPm10Row != null
+          ? double.tryParse(latestPm10Row[5])
+          : null;
+      double? latestPm25 = latestPm25Row != null
+          ? double.tryParse(latestPm25Row[5])
+          : null;
+      int? latestPm25Aqi = latestPm25 != null
+          ? calculatePm25Aqi(latestPm25)
           : null;
 
-      List<String>? latestPm25Row = pm25Rows.isNotEmpty
-          ? pm25Rows.reduce((a, b) =>
-              DateTime.parse(a[4].trim()).isAfter(DateTime.parse(b[4].trim()))
-                  ? a
-                  : b)
-          : null;
+      // Get historical values (last 5 for each type)
+      List<Map<String, dynamic>> pm10History = pm10Rows
+          .take(5)
+          .map((row) => {
+                'timestamp': row[4].trim(),
+                'value': double.tryParse(row[5]) ?? 0,
+              })
+          .toList();
 
-      double? pm25 = latestPm25Row != null ? double.tryParse(latestPm25Row[5]) : null;
-      int? pm25Aqi = pm25 != null ? calculatePm25Aqi(pm25) : null;
+      List<Map<String, dynamic>> pm25History = pm25Rows
+          .take(5)
+          .map((row) => {
+                'timestamp': row[4].trim(),
+                'value': double.tryParse(row[5]) ?? 0,
+              })
+          .toList();
+
+      List<Map<String, dynamic>> pm25AqiHistory = pm25Rows
+          .take(5)
+          .map((row) => {
+                'timestamp': row[4].trim(),
+                'value': calculatePm25Aqi(double.tryParse(row[5]) ?? 0),
+              })
+          .toList();
 
       return {
-        'pm10': latestPm10Row?[5],
-        'pm25': latestPm25Row?[5],
-        'pm25_aqi': pm25Aqi,
+        'pm10': latestPm10,
+        'pm25': latestPm25,
+        'pm25_aqi': latestPm25Aqi,
+        'pm10_history': pm10History,
+        'pm25_history': pm25History,
+        'pm25_aqi_history': pm25AqiHistory,
       };
     }
   }
