@@ -23,7 +23,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Historical Data'),
+        title: const Text('Historical Data',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
       ),
       body: FutureBuilder<Map<String, dynamic>>(

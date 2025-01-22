@@ -39,9 +39,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(width: 5),
               Text(
                 "Sensor 1",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
             ],
           ),
@@ -73,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                       snapshot.data?['latest_pm25_timestamp'] as String?;
 
                   final formattedTime = timestamp != null
-                      ? DateFormat('yyyy-MM-dd HH:mm:ss')
+                      ? DateFormat('yyyy-MM-dd (HH:mm:ss)')
                           .format(DateTime.parse(timestamp).toLocal())
                       : "Unavailable";
 
@@ -89,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                         child: Text(
                           "Last Updated: $formattedTime",
                           style: const TextStyle(
-                              fontSize: 14, fontStyle: FontStyle.italic),
+                              fontSize: 16, fontStyle: FontStyle.italic),
                         ),
                       ),
                     ],

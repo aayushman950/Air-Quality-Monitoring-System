@@ -51,22 +51,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
         backgroundColor: Colors.transparent,
         destinations: const [
           NavigationDestination(
-            selectedIcon: Icon(Icons.home, size: 40),
+            selectedIcon: Icon(Icons.home, size: 30),
             icon: Icon(Icons.home_outlined, size: 30),
             label: 'Home',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.analytics, size: 40),
+            selectedIcon: Icon(Icons.analytics, size: 30),
             icon: Icon(Icons.analytics_outlined, size: 30),
             label: 'History',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.lightbulb, size: 40),
+            selectedIcon: Icon(Icons.lightbulb, size: 30),
             icon: Icon(Icons.lightbulb_outlined, size: 30),
             label: 'Predicted',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings, size: 40),
+            selectedIcon: Icon(Icons.settings, size: 30),
             icon: Icon(Icons.settings_outlined, size: 30),
             label: 'Settings',
           ),

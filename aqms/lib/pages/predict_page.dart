@@ -67,7 +67,11 @@ class _PredictPageState extends State<PredictPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Predicted AQI'),
+        title: Text(
+          'Predicted AQI',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: predictedData,
