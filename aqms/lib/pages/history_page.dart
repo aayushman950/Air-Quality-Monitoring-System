@@ -63,7 +63,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                   _buildChart(
                     data: pm10History,
-                    title: "PM10 AQI",
+                    title: "PM10 Levels",
                     color: Colors.blue,
                   ),
                 ],
