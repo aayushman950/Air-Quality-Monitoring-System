@@ -103,7 +103,18 @@ class _HistoryPageState extends State<HistoryPage> {
                 gridData: FlGridData(show: true),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true),
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 50, // Customize interval based on range
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toInt().toString(),
+                          style: const TextStyle(fontSize: 10),
+                          textAlign: TextAlign.center,
+                        );
+                      },
+                      reservedSize: 40,
+                    ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -114,7 +125,8 @@ class _HistoryPageState extends State<HistoryPage> {
                         if (index >= 0 && index < data.length) {
                           return Text(
                             DateFormat('MM/dd').format(
-                                DateTime.parse(data[index]['timestamp'])),
+                              DateTime.parse(data[index]['timestamp']),
+                            ),
                             style: const TextStyle(fontSize: 10),
                           );
                         }
@@ -122,14 +134,25 @@ class _HistoryPageState extends State<HistoryPage> {
                       },
                     ),
                   ),
+                  rightTitles: AxisTitles(
+                    sideTitles:
+                        SideTitles(showTitles: false), // Hide right titles
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles:
+                        SideTitles(showTitles: false), // Hide top titles
+                  ),
                 ),
                 borderData: FlBorderData(show: true),
                 minX: 0,
                 maxX: data.length.toDouble() - 1,
                 minY: 0,
-                maxY: data
-                    .map((e) => (e['value'] as num).toDouble())
-                    .reduce((a, b) => a > b ? a : b),
+                maxY: data.length > 200
+                    ? data
+                            .map((e) => (e['value'] as num).toDouble())
+                            .reduce((a, b) => a > b ? a : b) *
+                        1.1
+                    : 200, // Add margin for better visualization
                 lineBarsData: [
                   LineChartBarData(
                     spots: data

@@ -54,7 +54,7 @@ class PMTile extends StatelessWidget {
                 Text(
                   pmValue.toString(),
                   style: TextStyle(
-                    fontSize: 38,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                     color: isDarkMode ? Colors.white : Colors.black,
                   ),
