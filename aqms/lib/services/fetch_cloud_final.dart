@@ -19,8 +19,8 @@ Future<Map<String, dynamic>> fetchData() async {
     int rowLength = 10;
     List<List<String>> rows = [];
     for (int i = 0; i < dataList.length; i += rowLength) {
-      rows.add(dataList.sublist(
-          i, i + rowLength > dataList.length ? dataList.length : i + rowLength));
+      rows.add(dataList.sublist(i,
+          i + rowLength > dataList.length ? dataList.length : i + rowLength));
     }
 
     if (rows.isNotEmpty) {
@@ -40,15 +40,12 @@ Future<Map<String, dynamic>> fetchData() async {
       List<String>? latestPm10Row = pm10Rows.isNotEmpty ? pm10Rows.first : null;
       List<String>? latestPm25Row = pm25Rows.isNotEmpty ? pm25Rows.first : null;
 
-      double? latestPm10 = latestPm10Row != null
-          ? double.tryParse(latestPm10Row[5])
-          : null;
-      double? latestPm25 = latestPm25Row != null
-          ? double.tryParse(latestPm25Row[5])
-          : null;
-      int? latestPm25Aqi = latestPm25 != null
-          ? calculatePm25Aqi(latestPm25)
-          : null;
+      double? latestPm10 =
+          latestPm10Row != null ? double.tryParse(latestPm10Row[5]) : null;
+      double? latestPm25 =
+          latestPm25Row != null ? double.tryParse(latestPm25Row[5]) : null;
+      int? latestPm25Aqi =
+          latestPm25 != null ? calculatePm25Aqi(latestPm25) : null;
 
       // Get historical values (last 5 for each type)
       List<Map<String, dynamic>> pm10History = pm10Rows
@@ -75,17 +72,22 @@ Future<Map<String, dynamic>> fetchData() async {
               })
           .toList();
 
+      String? latestPm25Timestamp =
+          latestPm25Row != null ? latestPm25Row[4].trim() : null;
+
       return {
         'pm10': latestPm10,
         'pm25': latestPm25,
         'pm25_aqi': latestPm25Aqi,
+        'latest_pm25_timestamp': latestPm25Timestamp,
         'pm10_history': pm10History,
         'pm25_history': pm25History,
         'pm25_aqi_history': pm25AqiHistory,
       };
     }
   }
-  throw Exception('Failed to fetch data. HTTP Status Code: ${response.statusCode}');
+  throw Exception(
+      'Failed to fetch data. HTTP Status Code: ${response.statusCode}');
 }
 
 int calculatePm25Aqi(double concentration) {
@@ -99,7 +101,8 @@ int calculatePm25Aqi(double concentration) {
 
   for (var bp in breakpoints) {
     if (concentration >= bp['C_lo'] && concentration <= bp['C_hi']) {
-      return ((bp['I_hi'] - bp['I_lo']) / (bp['C_hi'] - bp['C_lo']) *
+      return ((bp['I_hi'] - bp['I_lo']) /
+                  (bp['C_hi'] - bp['C_lo']) *
                   (concentration - bp['C_lo']) +
               bp['I_lo'])
           .round();

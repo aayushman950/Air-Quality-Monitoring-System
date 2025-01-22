@@ -64,15 +64,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (snapshot.hasData) {
-                  // Log fetched data
                   print('Fetched Data: ${snapshot.data}');
 
                   var pm10 = snapshot.data?['pm10'] as double?;
                   var pm25 = snapshot.data?['pm25'] as double?;
                   var aqi = snapshot.data?['pm25_aqi'] as int?;
+                  var timestamp =
+                      snapshot.data?['latest_pm25_timestamp'] as String?;
 
-                  final formattedTime =
-                      ""; // Replace with formatted timestamp if available.
+                  final formattedTime = timestamp != null
+                      ? DateFormat('yyyy-MM-dd HH:mm:ss')
+                          .format(DateTime.parse(timestamp).toLocal())
+                      : "Unavailable";
 
                   return ListView(
                     children: [
