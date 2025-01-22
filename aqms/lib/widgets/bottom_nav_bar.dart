@@ -61,9 +61,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'History',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings, size: 40),
-            icon: Icon(Icons.settings_outlined, size: 30),
-            label: 'Settings',
+            selectedIcon: Icon(Icons.lightbulb, size: 40),
+            icon: Icon(Icons.lightbulb_outlined, size: 30),
+            label: 'Predicted',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.settings, size: 40),
