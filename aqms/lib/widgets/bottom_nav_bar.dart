@@ -1,6 +1,7 @@
 import 'package:aqms/pages/account_page.dart';
 import 'package:aqms/pages/home_page.dart';
 import 'package:aqms/pages/history_page.dart';
+import 'package:aqms/pages/predict_page.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -31,6 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     pages = [
       HomePage(),
       HistoryPage(), // If needed, pass csvData or other parameters
+      PredictPage(),
       AccountPage(), // Adjust constructor as required
     ];
   }
@@ -57,6 +59,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             selectedIcon: Icon(Icons.analytics, size: 40),
             icon: Icon(Icons.analytics_outlined, size: 30),
             label: 'History',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.settings, size: 40),
+            icon: Icon(Icons.settings_outlined, size: 30),
+            label: 'Settings',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.settings, size: 40),
