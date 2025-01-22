@@ -54,9 +54,9 @@ class _PredictPageState extends State<PredictPage> {
     for (var bp in breakpoints) {
       if (concentration >= bp['C_lo'] && concentration <= bp['C_hi']) {
         return ((bp['I_hi'] - bp['I_lo']) /
-                (bp['C_hi'] - bp['C_lo']) *
-                (concentration - bp['C_lo']) +
-            bp['I_lo'])
+                    (bp['C_hi'] - bp['C_lo']) *
+                    (concentration - bp['C_lo']) +
+                bp['I_lo'])
             .round();
       }
     }
@@ -82,11 +82,23 @@ class _PredictPageState extends State<PredictPage> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final item = data[index];
-                return ListTile(
-                  title: Text(
-                      'Date: ${item['date'].toString().split(' ')[0]}'),
-                  subtitle: Text('PM2.5: ${item['pm25'].toStringAsFixed(2)}'),
-                  trailing: Text('AQI: ${item['aqi']}'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(
+                    title: Text(
+                      '${item['date'].toString().split(' ')[0]}',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    trailing: Text(
+                      '${item['aqi']}',
+                      style: TextStyle(
+                        fontSize: 32,
+                        color:
+                            getAqiColor(item['aqi']), // Dynamically set color
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 );
               },
             );
@@ -96,5 +108,21 @@ class _PredictPageState extends State<PredictPage> {
         },
       ),
     );
+  }
+}
+
+Color getAqiColor(int aqi) {
+  if (aqi <= 50) {
+    return Colors.green; // Good
+  } else if (aqi <= 100) {
+    return Colors.yellow; // Moderate
+  } else if (aqi <= 150) {
+    return Colors.orange; // Unhealthy for Sensitive Groups
+  } else if (aqi <= 200) {
+    return Colors.red; // Unhealthy
+  } else if (aqi <= 300) {
+    return Colors.purple; // Very Unhealthy
+  } else {
+    return Colors.red.shade900; // Hazardous
   }
 }
