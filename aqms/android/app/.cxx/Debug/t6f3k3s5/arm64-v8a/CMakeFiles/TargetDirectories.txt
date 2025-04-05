@@ -1,0 +1,2 @@
+C:/Users/iusss/Documents/coding/flutter-projects/Air-Quality-Monitoring-System/aqms/android/app/.cxx/Debug/t6f3k3s5/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/iusss/Documents/coding/flutter-projects/Air-Quality-Monitoring-System/aqms/android/app/.cxx/Debug/t6f3k3s5/arm64-v8a/CMakeFiles/rebuild_cache.dir

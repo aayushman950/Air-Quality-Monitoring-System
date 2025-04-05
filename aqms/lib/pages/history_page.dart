@@ -101,7 +101,7 @@ class _HistoryPageState extends State<HistoryPage> {
             height: 200,
             child: LineChart(
               LineChartData(
-                gridData: FlGridData(show: true),
+                gridData: const FlGridData(show: true),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -137,11 +137,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       },
                     ),
                   ),
-                  rightTitles: AxisTitles(
+                  rightTitles: const AxisTitles(
                     sideTitles:
                         SideTitles(showTitles: false), // Hide right titles
                   ),
-                  topTitles: AxisTitles(
+                  topTitles: const AxisTitles(
                     sideTitles:
                         SideTitles(showTitles: false), // Hide top titles
                   ),
@@ -166,7 +166,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         .toList(),
                     isCurved: true,
                     color: color,
-                    dotData: FlDotData(show: true),
+                    dotData: const FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
                       color: color.withOpacity(0.3),

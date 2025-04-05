@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> fetchData() async {
-  final url =
+  const url =
       "https://mr14920914789139185.pythonanywhere.com/read?from_date=2024-01-01T08:00:00Z&to_date=2026-01-01T20:00:01Z";
 
   final response = await http.get(Uri.parse(url));

@@ -20,7 +20,7 @@ class AQIGauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 400,
       child: SfRadialGauge(
         animationDuration: 2000,

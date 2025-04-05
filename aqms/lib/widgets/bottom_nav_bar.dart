@@ -30,10 +30,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     // Pass csvData to HomePage
     pages = [
-      HomePage(),
-      HistoryPage(), // If needed, pass csvData or other parameters
+      const HomePage(),
+      const HistoryPage(), // If needed, pass csvData or other parameters
       PredictPage(),
-      AccountPage(), // Adjust constructor as required
+      const AccountPage(), // Adjust constructor as required
     ];
   }
 

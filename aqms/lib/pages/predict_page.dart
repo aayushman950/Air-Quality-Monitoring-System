@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class PredictPage extends StatefulWidget {
+  const PredictPage({super.key});
+
   @override
   _PredictPageState createState() => _PredictPageState();
 }
@@ -19,7 +21,7 @@ class _PredictPageState extends State<PredictPage> {
   Future<List<Map<String, dynamic>>> fetchPredictedData() async {
     final response = await http.get(
       Uri.parse(
-          'https://mr14920914789139185.pythonanywhere.com/predict?from_date=2025-01-24%2000:00:00&to_date=2025-01-31%20%2000:00:00'),
+          'https://mr14920914789139185.pythonanywhere.com/predict?from_date=2025-03-07%2000:00:00&to_date=2025-03-14%20%2000:00:00'),
     );
 
     if (response.statusCode == 200) {
@@ -67,7 +69,7 @@ class _PredictPageState extends State<PredictPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Predicted AQI',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
@@ -77,7 +79,7 @@ class _PredictPageState extends State<PredictPage> {
         future: predictedData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
@@ -90,8 +92,8 @@ class _PredictPageState extends State<PredictPage> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(
-                      '${item['date'].toString().split(' ')[0]}',
-                      style: TextStyle(fontSize: 24),
+                      item['date'].toString().split(' ')[0],
+                      style: const TextStyle(fontSize: 24),
                     ),
                     trailing: Text(
                       '${item['aqi']}',
@@ -107,7 +109,7 @@ class _PredictPageState extends State<PredictPage> {
               },
             );
           } else {
-            return Center(child: Text('No data available'));
+            return const Center(child: Text('No data available'));
           }
         },
       ),

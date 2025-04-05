@@ -1,5 +1,4 @@
 import 'package:csv/csv.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FetchLatestData {
@@ -26,7 +25,7 @@ class FetchLatestData {
         orElse: () => [],
       );
 
-      if (pm10Row != null && pm25Row != null) {
+      if (pm25Row != null) {
         return {
           'PM10': double.parse(pm10Row[5].toString()),
           'PM2.5': double.parse(pm25Row[5].toString()),
