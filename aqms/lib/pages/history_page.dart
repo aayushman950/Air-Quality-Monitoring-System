@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Displays historical air quality data as line charts,
+/// showing the average value for each day of the week (Mon-Sun).
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -16,7 +18,8 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    _futureData = fetchData(); // Use the shared fetchData function
+    // Fetch data when the page is initialized
+    _futureData = fetchData();
   }
 
   @override
@@ -31,23 +34,28 @@ class _HistoryPageState extends State<HistoryPage> {
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show loading spinner while waiting for data
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
+            // Show error message if fetch failed
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            // Show message if no data is available
             return const Center(
               child: Text('No historical data available.'),
             );
           } else {
+            // Extract processed data from the fetchData() result
             final Map<String, dynamic> data = snapshot.data!;
             final pm10History = data['pm10_history'];
             final pm25History = data['pm25_history'];
             final pm25AqiHistory = data['pm25_aqi_history'];
 
+            // Display three charts: AQI, PM2.5, PM10
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -75,6 +83,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  /// Builds a line chart for a given metric's 7-day (weekday) history.
   Widget _buildChart({
     required List<Map<String, dynamic>> data,
     required String title,
@@ -86,6 +95,18 @@ class _HistoryPageState extends State<HistoryPage> {
         child: Text("No data available for $title."),
       );
     }
+
+    // Weekday names for x-axis labels (1=Mon, 7=Sun)
+    const weekdayNames = [
+      '', // 0 index unused
+      'Mon',
+      'Tue',
+      'Wed',
+      'Thu',
+      'Fri',
+      'Sat',
+      'Sun',
+    ];
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -106,7 +127,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 50, // Customize interval based on range
+                      interval: 50, // Y-axis interval
                       getTitlesWidget: (value, meta) {
                         return Text(
                           value.toInt().toString(),
@@ -124,12 +145,10 @@ class _HistoryPageState extends State<HistoryPage> {
                       getTitlesWidget: (value, meta) {
                         final int index = value.toInt();
                         if (index >= 0 && index < data.length) {
-                          // Reverse the index to display labels in reverse order
-                          final reversedIndex = data.length - 1 - index;
+                          // Weekday index: 0=Mon, ..., 6=Sun
+                          int weekday = index + 1;
                           return Text(
-                            DateFormat.Hm().format(
-                              DateTime.parse(data[reversedIndex]['timestamp']),
-                            ),
+                            weekdayNames[weekday],
                             style: const TextStyle(fontSize: 10),
                           );
                         }
@@ -150,7 +169,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 minX: 0,
                 maxX: data.length.toDouble() - 1,
                 minY: 0,
-                maxY: data.length > 200
+                maxY: data.length > 0
                     ? data
                             .map((e) => (e['value'] as num).toDouble())
                             .reduce((a, b) => a > b ? a : b) *
