@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class PredictPage extends StatefulWidget {
   const PredictPage({super.key});
@@ -19,10 +20,25 @@ class _PredictPageState extends State<PredictPage> {
   }
 
   Future<List<Map<String, dynamic>>> fetchPredictedData() async {
-    final response = await http.get(
-      Uri.parse(
-          'https://mr14920914789139185.pythonanywhere.com/predict?from_date=2025-03-07%2000:00:00&to_date=2025-03-14%20%2000:00:00'),
-    );
+    // Get current date
+    final now = DateTime.now();
+
+    // Format today's date
+    final fromDate = DateFormat('yyyy-MM-dd 00:00:00').format(now);
+
+    // Calculate and format the date 7 days from now
+    final toDate = DateFormat('yyyy-MM-dd 00:00:00')
+        .format(now.add(const Duration(days: 7)));
+
+    // URL encode the dates
+    final encodedFromDate = Uri.encodeComponent(fromDate);
+    final encodedToDate = Uri.encodeComponent(toDate);
+
+    // Create the dynamic URL
+    final url =
+        'https://mr14920914789139185.pythonanywhere.com/predict?from_date=$encodedFromDate&to_date=$encodedToDate';
+
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;

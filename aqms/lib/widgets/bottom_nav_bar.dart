@@ -32,7 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     pages = [
       const HomePage(),
       const HistoryPage(), // If needed, pass csvData or other parameters
-      PredictPage(),
+      const PredictPage(),
       const AccountPage(), // Adjust constructor as required
     ];
   }

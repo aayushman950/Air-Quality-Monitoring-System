@@ -25,16 +25,12 @@ class FetchLatestData {
         orElse: () => [],
       );
 
-      if (pm25Row != null) {
-        return {
-          'PM10': double.parse(pm10Row[5].toString()),
-          'PM2.5': double.parse(pm25Row[5].toString()),
-          'time': pm10Row[4], // Assuming time is consistent
-        };
-      } else {
-        throw Exception("PM10 or PM2.5 data not found");
-      }
-    } else {
+      return {
+        'PM10': double.parse(pm10Row[5].toString()),
+        'PM2.5': double.parse(pm25Row[5].toString()),
+        'time': pm10Row[4], // Assuming time is consistent
+      };
+        } else {
       throw Exception("Failed to fetch data: ${response.statusCode}");
     }
   }
