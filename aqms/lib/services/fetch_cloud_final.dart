@@ -2,27 +2,24 @@ import 'package:http/http.dart' as http;
 
 /// Fetches air quality data from the cloud API, processes it,
 /// and returns a map containing the latest values and
-/// 7-day (weekday) average histories for PM10, PM2.5, and PM2.5 AQI.
+/// 7-day (weekday), 30-day, and 90-day average histories
+/// for PM10, PM2.5, and PM2.5 AQI.
 Future<Map<String, dynamic>> fetchData() async {
   const url =
       "https://mr14920914789139185.pythonanywhere.com/read?from_date=2024-01-01T08:00:00Z&to_date=2026-01-01T20:00:01Z";
 
-  // Make HTTP GET request
   final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
-    // Clean and parse the CSV-like response
     String data = response.body.trim();
     String cleanedData = data.replaceAll(RegExp(r'^[,"\r\n]+|[,"\r\n]+$'), '');
     String normalizedData = cleanedData.replaceAll(RegExp(r'\r\n|\r'), '\n');
     List<String> dataList = normalizedData.split(',');
 
-    // Remove empty first element if present
     if (dataList.isNotEmpty && dataList[0] == '') {
       dataList.removeAt(0);
     }
 
-    // Split flat list into rows of 10 columns each
     int rowLength = 10;
     List<List<String>> rows = [];
     for (int i = 0; i < dataList.length; i += rowLength) {
@@ -31,22 +28,18 @@ Future<Map<String, dynamic>> fetchData() async {
     }
 
     if (rows.isNotEmpty) {
-      // Skip header row
       List<List<String>> dataRows = rows.skip(1).toList();
 
-      // Filter for PM10 and PM2.5 rows
       List<List<String>> pm10Rows =
           dataRows.where((row) => row[6].trim() == 'pm10').toList();
       List<List<String>> pm25Rows =
           dataRows.where((row) => row[6].trim() == 'pm25').toList();
 
-      // Sort by timestamp descending (latest first)
       pm10Rows.sort((a, b) =>
           DateTime.parse(b[4].trim()).compareTo(DateTime.parse(a[4].trim())));
       pm25Rows.sort((a, b) =>
           DateTime.parse(b[4].trim()).compareTo(DateTime.parse(a[4].trim())));
 
-      // Get latest values for PM10 and PM2.5
       List<String>? latestPm10Row = pm10Rows.isNotEmpty ? pm10Rows.first : null;
       List<String>? latestPm25Row = pm25Rows.isNotEmpty ? pm25Rows.first : null;
 
@@ -57,30 +50,34 @@ Future<Map<String, dynamic>> fetchData() async {
       int? latestPm25Aqi =
           latestPm25 != null ? calculatePm25Aqi(latestPm25) : null;
 
-      /// Helper function to group data by weekday and calculate average.
-      /// Returns a list of 7 maps (one for each weekday, Mon=1..Sun=7).
-      List<Map<String, dynamic>> _averageByWeekday(List<List<String>> rows, {bool isAqi = false}) {
+      /// Helper: Group by weekday and return 7 average values
+      List<Map<String, dynamic>> _averageByWeekday(List<List<String>> rows,
+          {bool isAqi = false}) {
         Map<int, List<double>> weekdayValues = {};
         for (var row in rows) {
           DateTime dt = DateTime.parse(row[4].trim());
-          int weekday = dt.weekday; // 1=Mon, 7=Sun
+          int weekday = dt.weekday;
           double value = double.tryParse(row[5]) ?? 0;
           if (isAqi) value = calculatePm25Aqi(value).toDouble();
           weekdayValues.putIfAbsent(weekday, () => []).add(value);
         }
-        // Build result for all 7 days
+
         List<Map<String, dynamic>> result = [];
         for (int i = 1; i <= 7; i++) {
           List<double> values = weekdayValues[i] ?? [];
           double avg = values.isNotEmpty
               ? values.reduce((a, b) => a + b) / values.length
               : 0;
-          // Use the most recent timestamp for that weekday, or empty string
           String? timestamp;
           if (rows.isNotEmpty) {
-            var filtered = rows.where((row) => DateTime.parse(row[4].trim()).weekday == i).toList();
+            var filtered = rows
+                .where((row) =>
+                    DateTime.parse(row[4].trim()).weekday == i)
+                .toList();
             if (filtered.isNotEmpty) {
-              filtered.sort((a, b) => DateTime.parse(b[4].trim()).compareTo(DateTime.parse(a[4].trim())));
+              filtered.sort((a, b) =>
+                  DateTime.parse(b[4].trim())
+                      .compareTo(DateTime.parse(a[4].trim())));
               timestamp = filtered.first[4].trim();
             }
           }
@@ -92,15 +89,63 @@ Future<Map<String, dynamic>> fetchData() async {
         return result;
       }
 
-      // Calculate 7-day (weekday) averages for each metric
+      /// Helper: Daily averages over the last [dayCount] days
+      List<Map<String, dynamic>> _averageByDayRange(List<List<String>> rows, int dayCount,
+          {bool isAqi = false}) {
+        Map<String, List<double>> dayValues = {};
+        DateTime now = DateTime.now();
+
+        for (var row in rows) {
+          DateTime dt = DateTime.parse(row[4].trim());
+          if (dt.isBefore(now.subtract(Duration(days: dayCount)))) continue;
+
+          String dayKey =
+              "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
+          double value = double.tryParse(row[5]) ?? 0;
+          if (isAqi) value = calculatePm25Aqi(value).toDouble();
+          dayValues.putIfAbsent(dayKey, () => []).add(value);
+        }
+
+        List<Map<String, dynamic>> result = [];
+        var sortedKeys = dayValues.keys.toList()
+          ..sort((a, b) => b.compareTo(a));
+
+        for (var dayKey in sortedKeys) {
+          List<double> values = dayValues[dayKey]!;
+          double avg = values.reduce((a, b) => a + b) / values.length;
+
+          String? timestamp = rows
+              .where((row) => row[4].startsWith(dayKey))
+              .map((row) => row[4])
+              .fold('', (a, b) => a!.compareTo(b) > 0 ? a : b);
+
+          result.add({
+            'date': dayKey,
+            'value': avg,
+            'timestamp': timestamp,
+          });
+        }
+
+        return result;
+      }
+
+      // Calculate all histories
       List<Map<String, dynamic>> pm10History = _averageByWeekday(pm10Rows);
       List<Map<String, dynamic>> pm25History = _averageByWeekday(pm25Rows);
       List<Map<String, dynamic>> pm25AqiHistory = _averageByWeekday(pm25Rows, isAqi: true);
 
+      List<Map<String, dynamic>> pm10_30d = _averageByDayRange(pm10Rows, 30);
+      List<Map<String, dynamic>> pm10_90d = _averageByDayRange(pm10Rows, 90);
+
+      List<Map<String, dynamic>> pm25_30d = _averageByDayRange(pm25Rows, 30);
+      List<Map<String, dynamic>> pm25_90d = _averageByDayRange(pm25Rows, 90);
+
+      List<Map<String, dynamic>> pm25_aqi_30d = _averageByDayRange(pm25Rows, 30, isAqi: true);
+      List<Map<String, dynamic>> pm25_aqi_90d = _averageByDayRange(pm25Rows, 90, isAqi: true);
+
       String? latestPm25Timestamp =
           latestPm25Row != null ? latestPm25Row[4].trim() : null;
 
-      // Return all results in a map
       return {
         'pm10': latestPm10,
         'pm25': latestPm25,
@@ -109,12 +154,17 @@ Future<Map<String, dynamic>> fetchData() async {
         'pm10_history': pm10History,
         'pm25_history': pm25History,
         'pm25_aqi_history': pm25AqiHistory,
+        'pm10_30d': pm10_30d,
+        'pm10_90d': pm10_90d,
+        'pm25_30d': pm25_30d,
+        'pm25_90d': pm25_90d,
+        'pm25_aqi_30d': pm25_aqi_30d,
+        'pm25_aqi_90d': pm25_aqi_90d,
       };
     }
   }
-  // If HTTP request failed, throw an error
-  throw Exception(
-      'Failed to fetch data. HTTP Status Code: ${response.statusCode}');
+
+  throw Exception('Failed to fetch data. HTTP Status Code: ${response.statusCode}');
 }
 
 /// Calculates the AQI for a given PM2.5 concentration using EPA breakpoints.
@@ -136,5 +186,5 @@ int calculatePm25Aqi(double concentration) {
           .round();
     }
   }
-  return -1; // Invalid AQI if out of range
+  return -1;
 }

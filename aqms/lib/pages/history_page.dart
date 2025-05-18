@@ -3,7 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 /// Displays historical air quality data as line charts,
-/// showing the average value for each day of the week (Mon-Sun).
+/// showing the average value for each day of the week (Mon-Sun),
+/// and the last 30 and 90 calendar days.
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -17,7 +18,6 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch data when the page is initialized
     _futureData = fetchData();
   }
 
@@ -33,46 +33,28 @@ class _HistoryPageState extends State<HistoryPage> {
         future: _futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show loading spinner while waiting for data
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Show error message if fetch failed
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Show message if no data is available
-            return const Center(
-              child: Text('No historical data available.'),
-            );
+            return const Center(child: Text('No historical data available.'));
           } else {
-            // Extract processed data from the fetchData() result
             final Map<String, dynamic> data = snapshot.data!;
-            final pm10History = data['pm10_history'];
-            final pm25History = data['pm25_history'];
-            final pm25AqiHistory = data['pm25_aqi_history'];
 
-            // Display three charts: AQI, PM2.5, PM10
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  _buildChart(
-                    data: pm25AqiHistory,
-                    title: "AQI Levels",
-                    color: Colors.red,
-                  ),
-                  _buildChart(
-                    data: pm25History,
-                    title: "PM2.5 Levels",
-                    color: Colors.green,
-                  ),
-                  _buildChart(
-                    data: pm10History,
-                    title: "PM10 Levels",
-                    color: Colors.blue,
-                  ),
+                  _buildWeekdayChart(data['pm25_aqi_history'], 'AQI (7-Day)', Colors.red),
+                  _buildWeekdayChart(data['pm25_history'], 'PM2.5 (7-Day)', Colors.green),
+                  _buildWeekdayChart(data['pm10_history'], 'PM10 (7-Day)', Colors.blue),
+
+                  _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red),
+                  _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green),
+                  _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue),
+
+                  _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red),
+                  _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green),
+                  _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue),
                 ],
               ),
             );
@@ -82,40 +64,53 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  /// Builds a line chart for a given metric's 7-day (weekday) history.
+  Widget _buildWeekdayChart(List<Map<String, dynamic>> data, String title, Color color) {
+    const weekdayNames = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    return _buildChart(
+      title: title,
+      color: color,
+      spots: data.asMap().entries.map((entry) =>
+          FlSpot(entry.key.toDouble(), (entry.value['value'] as num).toDouble())).toList(),
+      bottomTitles: (value) {
+        int index = value.toInt();
+        if (index >= 0 && index < data.length) {
+          int weekday = index + 1;
+          return Text(weekdayNames[weekday], style: const TextStyle(fontSize: 10));
+        }
+        return const Text('');
+      },
+    );
+  }
+
+  Widget _buildDayChart(List<Map<String, dynamic>> data, String title, Color color) {
+    return _buildChart(
+      title: title,
+      color: color,
+      spots: data.asMap().entries.map((entry) =>
+          FlSpot(entry.key.toDouble(), (entry.value['value'] as num).toDouble())).toList(),
+      bottomTitles: (value) {
+        int index = value.toInt();
+        if (index >= 0 && index < data.length) {
+          return Text(data[index]['date'].toString().substring(5), style: const TextStyle(fontSize: 8));
+        }
+        return const Text('');
+      },
+    );
+  }
+
   Widget _buildChart({
-    required List<Map<String, dynamic>> data,
+    required List<FlSpot> spots,
     required String title,
     required Color color,
+    required Widget Function(double) bottomTitles,
   }) {
-    if (data.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text("No data available for $title."),
-      );
-    }
-
-    // Weekday names for x-axis labels (1=Mon, 7=Sun)
-    const weekdayNames = [
-      '', // 0 index unused
-      'Mon',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat',
-      'Sun',
-    ];
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           SizedBox(
             height: 200,
@@ -126,62 +121,29 @@ class _HistoryPageState extends State<HistoryPage> {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 50, // Y-axis interval
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(fontSize: 10),
-                          textAlign: TextAlign.center,
-                        );
-                      },
                       reservedSize: 40,
+                      interval: 50,
+                      getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(fontSize: 10)),
                     ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
                       interval: 1,
-                      getTitlesWidget: (value, meta) {
-                        final int index = value.toInt();
-                        if (index >= 0 && index < data.length) {
-                          // Weekday index: 0=Mon, ..., 6=Sun
-                          int weekday = index + 1;
-                          return Text(
-                            weekdayNames[weekday],
-                            style: const TextStyle(fontSize: 10),
-                          );
-                        }
-                        return const Text('');
-                      },
+                      getTitlesWidget: (value, meta) => bottomTitles(value),
                     ),
                   ),
-                  rightTitles: const AxisTitles(
-                    sideTitles:
-                        SideTitles(showTitles: false), // Hide right titles
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles:
-                        SideTitles(showTitles: false), // Hide top titles
-                  ),
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 ),
                 borderData: FlBorderData(show: true),
                 minX: 0,
-                maxX: data.length.toDouble() - 1,
+                maxX: spots.length > 1 ? spots.length.toDouble() - 1 : 1,
                 minY: 0,
-                maxY: data.length > 0
-                    ? data
-                            .map((e) => (e['value'] as num).toDouble())
-                            .reduce((a, b) => a > b ? a : b) *
-                        1.1
-                    : 200, // Add margin for better visualization
+                maxY: spots.isNotEmpty ? spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) * 1.1 : 100,
                 lineBarsData: [
                   LineChartBarData(
-                    spots: data
-                        .asMap()
-                        .entries
-                        .map((entry) => FlSpot(entry.key.toDouble(),
-                            (entry.value['value'] as num).toDouble()))
-                        .toList(),
+                    spots: spots,
                     isCurved: true,
                     color: color,
                     dotData: const FlDotData(show: true),
