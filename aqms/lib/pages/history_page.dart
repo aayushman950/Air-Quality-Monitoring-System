@@ -1,7 +1,6 @@
 import 'package:aqms/services/fetch_cloud_final.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Displays historical air quality data as line charts,
 /// showing the average value for each day of the week (Mon-Sun).
