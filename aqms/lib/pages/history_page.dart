@@ -42,21 +42,39 @@ class _HistoryPageState extends State<HistoryPage> {
             List<Widget> charts = [];
             if (_selectedRange == '7-Day') {
               charts = [
-                _buildWeekdayChart(data['pm25_aqi_history'], 'AQI (7-Day)', Colors.red),
-                _buildWeekdayChart(data['pm25_history'], 'PM2.5 (7-Day)', Colors.green),
-                _buildWeekdayChart(data['pm10_history'], 'PM10 (7-Day)', Colors.blue),
+                _buildWeekdayChart(
+                    data['pm25_aqi_history'], 'AQI (7-Day)', Colors.red),
+                _buildWeekdayChart(
+                    data['pm25_history'], 'PM2.5 (7-Day)', Colors.green),
+                _buildWeekdayChart(
+                    data['pm10_history'], 'PM10 (7-Day)', Colors.blue),
               ];
             } else if (_selectedRange == '30-Day') {
               charts = [
-                _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red, labelStrategy: _labelEveryWeek),
-                _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green, labelStrategy: _labelEveryWeek),
-                _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue, labelStrategy: _labelEveryWeek),
+                _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red,
+                    labelStrategy: _labelEveryWeek),
+                _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green,
+                    labelStrategy: _labelEveryWeek),
+                _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue,
+                    labelStrategy: _labelEveryWeek),
               ];
             } else if (_selectedRange == '90-Day') {
               charts = [
-                _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red, labelStrategy: _labelTwicePerMonth),
-                _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green, labelStrategy: _labelTwicePerMonth),
-                _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue, labelStrategy: _labelTwicePerMonth),
+                _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red,
+                    labelStrategy: _labelTwicePerMonth),
+                _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green,
+                    labelStrategy: _labelTwicePerMonth),
+                _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue,
+                    labelStrategy: _labelTwicePerMonth),
+              ];
+            } else if (_selectedRange == 'All Data') {
+              charts = [
+                _buildScrollableDayChart(
+                    data['pm25_aqi_daily_all'], 'AQI (All Data)', Colors.red),
+                _buildScrollableDayChart(
+                    data['pm25_daily_all'], 'PM2.5 (All Data)', Colors.green),
+                _buildScrollableDayChart(
+                    data['pm10_daily_all'], 'PM10 (All Data)', Colors.blue),
               ];
             }
 
@@ -71,7 +89,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         _selectedRange = newValue!;
                       });
                     },
-                    items: <String>['7-Day', '30-Day', '90-Day']
+                    items: <String>['7-Day', '30-Day', '90-Day', 'All Data']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -93,32 +111,45 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildWeekdayChart(List<Map<String, dynamic>> data, String title, Color color) {
+  Widget _buildWeekdayChart(
+      List<Map<String, dynamic>> data, String title, Color color) {
     const weekdayNames = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return _buildChart(
       title: title,
       color: color,
-      spots: data.asMap().entries.map((entry) =>
-          FlSpot(entry.key.toDouble(), (entry.value['value'] as num).toDouble())).toList(),
+      spots: data
+          .asMap()
+          .entries
+          .map((entry) => FlSpot(
+              entry.key.toDouble(), (entry.value['value'] as num).toDouble()))
+          .toList(),
       bottomTitles: (value) {
         int index = value.toInt();
         if (index >= 0 && index < data.length) {
           int weekday = index + 1;
-          return Text(weekdayNames[weekday], style: const TextStyle(fontSize: 12));
+          return Text(weekdayNames[weekday],
+              style: const TextStyle(fontSize: 12));
         }
         return const Text('');
       },
     );
   }
 
-  Widget _buildDayChart(List<Map<String, dynamic>> data, String title, Color color, {required String Function(int, List<Map<String, dynamic>>) labelStrategy}) {
+  Widget _buildDayChart(
+      List<Map<String, dynamic>> data, String title, Color color,
+      {required String Function(int, List<Map<String, dynamic>>)
+          labelStrategy}) {
     final reversedData = data.reversed.toList();
     return _buildChart(
       title: title,
       color: color,
-      spots: reversedData.asMap().entries.map((entry) =>
-          FlSpot(entry.key.toDouble(), (entry.value['value'] as num).toDouble())).toList(),
+      spots: reversedData
+          .asMap()
+          .entries
+          .map((entry) => FlSpot(
+              entry.key.toDouble(), (entry.value['value'] as num).toDouble()))
+          .toList(),
       bottomTitles: (value) {
         int index = value.toInt();
         if (index >= 0 && index < reversedData.length) {
@@ -127,6 +158,98 @@ class _HistoryPageState extends State<HistoryPage> {
         }
         return const Text('');
       },
+    );
+  }
+
+  Widget _buildScrollableDayChart(
+      List<Map<String, dynamic>> data, String title, Color color) {
+    final reversedData = data.reversed.toList();
+
+    final spots = reversedData
+        .asMap()
+        .entries
+        .map((entry) => FlSpot(
+            entry.key.toDouble(), (entry.value['value'] as num).toDouble()))
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: reversedData.length * 30, // Adjust width per point
+                child: LineChart(
+                  LineChartData(
+                    gridData: const FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 40,
+                          interval: 50,
+                          getTitlesWidget: (value, meta) => Text(
+                              value.toInt().toString(),
+                              style: const TextStyle(fontSize: 10)),
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) {
+                            int index = value.toInt();
+                            if (index >= 0 && index < reversedData.length) {
+                              return Text(
+                                reversedData[index]['date']
+                                    .toString()
+                                    .substring(5), // MM-DD
+                                style: const TextStyle(fontSize: 10),
+                              );
+                            }
+                            return const Text('');
+                          },
+                        ),
+                      ),
+                      rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    borderData: FlBorderData(show: true),
+                    minX: 0,
+                    maxX: spots.length > 1 ? spots.length.toDouble() - 1 : 1,
+                    minY: 0,
+                    maxY:
+                        spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) *
+                            1.1,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: spots,
+                        isCurved: true,
+                        color: color,
+                        dotData: const FlDotData(show: false),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: color.withOpacity(0.3),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -141,7 +264,9 @@ class _HistoryPageState extends State<HistoryPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(title,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           SizedBox(
             height: 200,
@@ -154,7 +279,9 @@ class _HistoryPageState extends State<HistoryPage> {
                       showTitles: true,
                       reservedSize: 40,
                       interval: 50,
-                      getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(fontSize: 10)),
+                      getTitlesWidget: (value, meta) => Text(
+                          value.toInt().toString(),
+                          style: const TextStyle(fontSize: 10)),
                     ),
                   ),
                   bottomTitles: AxisTitles(
@@ -164,14 +291,19 @@ class _HistoryPageState extends State<HistoryPage> {
                       getTitlesWidget: (value, meta) => bottomTitles(value),
                     ),
                   ),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                 ),
                 borderData: FlBorderData(show: true),
                 minX: 0,
                 maxX: spots.length > 1 ? spots.length.toDouble() - 1 : 1,
                 minY: 0,
-                maxY: spots.isNotEmpty ? spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) * 1.1 : 100,
+                maxY: spots.isNotEmpty
+                    ? spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) *
+                        1.1
+                    : 100,
                 lineBarsData: [
                   LineChartBarData(
                     spots: spots,

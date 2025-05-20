@@ -23,8 +23,8 @@ Future<Map<String, dynamic>> fetchData() async {
     int rowLength = 10;
     List<List<String>> rows = [];
     for (int i = 0; i < dataList.length; i += rowLength) {
-      rows.add(dataList.sublist(
-          i, i + rowLength > dataList.length ? dataList.length : i + rowLength));
+      rows.add(dataList.sublist(i,
+          i + rowLength > dataList.length ? dataList.length : i + rowLength));
     }
 
     if (rows.isNotEmpty) {
@@ -71,13 +71,11 @@ Future<Map<String, dynamic>> fetchData() async {
           String? timestamp;
           if (rows.isNotEmpty) {
             var filtered = rows
-                .where((row) =>
-                    DateTime.parse(row[4].trim()).weekday == i)
+                .where((row) => DateTime.parse(row[4].trim()).weekday == i)
                 .toList();
             if (filtered.isNotEmpty) {
-              filtered.sort((a, b) =>
-                  DateTime.parse(b[4].trim())
-                      .compareTo(DateTime.parse(a[4].trim())));
+              filtered.sort((a, b) => DateTime.parse(b[4].trim())
+                  .compareTo(DateTime.parse(a[4].trim())));
               timestamp = filtered.first[4].trim();
             }
           }
@@ -90,7 +88,8 @@ Future<Map<String, dynamic>> fetchData() async {
       }
 
       /// Helper: Daily averages over the last [dayCount] days
-      List<Map<String, dynamic>> _averageByDayRange(List<List<String>> rows, int dayCount,
+      List<Map<String, dynamic>> _averageByDayRange(
+          List<List<String>> rows, int dayCount,
           {bool isAqi = false}) {
         Map<String, List<double>> dayValues = {};
         DateTime now = DateTime.now();
@@ -132,7 +131,8 @@ Future<Map<String, dynamic>> fetchData() async {
       // Calculate all histories
       List<Map<String, dynamic>> pm10History = _averageByWeekday(pm10Rows);
       List<Map<String, dynamic>> pm25History = _averageByWeekday(pm25Rows);
-      List<Map<String, dynamic>> pm25AqiHistory = _averageByWeekday(pm25Rows, isAqi: true);
+      List<Map<String, dynamic>> pm25AqiHistory =
+          _averageByWeekday(pm25Rows, isAqi: true);
 
       List<Map<String, dynamic>> pm10_30d = _averageByDayRange(pm10Rows, 30);
       List<Map<String, dynamic>> pm10_90d = _averageByDayRange(pm10Rows, 90);
@@ -140,8 +140,17 @@ Future<Map<String, dynamic>> fetchData() async {
       List<Map<String, dynamic>> pm25_30d = _averageByDayRange(pm25Rows, 30);
       List<Map<String, dynamic>> pm25_90d = _averageByDayRange(pm25Rows, 90);
 
-      List<Map<String, dynamic>> pm25_aqi_30d = _averageByDayRange(pm25Rows, 30, isAqi: true);
-      List<Map<String, dynamic>> pm25_aqi_90d = _averageByDayRange(pm25Rows, 90, isAqi: true);
+      List<Map<String, dynamic>> pm25_aqi_30d =
+          _averageByDayRange(pm25Rows, 30, isAqi: true);
+      List<Map<String, dynamic>> pm25_aqi_90d =
+          _averageByDayRange(pm25Rows, 90, isAqi: true);
+
+      List<Map<String, dynamic>> pm10_all_days =
+          _averageByDayRange(pm10Rows, 10000);
+      List<Map<String, dynamic>> pm25_all_days =
+          _averageByDayRange(pm25Rows, 10000);
+      List<Map<String, dynamic>> pm25_aqi_all_days =
+          _averageByDayRange(pm25Rows, 10000, isAqi: true);
 
       String? latestPm25Timestamp =
           latestPm25Row != null ? latestPm25Row[4].trim() : null;
@@ -160,11 +169,15 @@ Future<Map<String, dynamic>> fetchData() async {
         'pm25_90d': pm25_90d,
         'pm25_aqi_30d': pm25_aqi_30d,
         'pm25_aqi_90d': pm25_aqi_90d,
+        'pm10_daily_all': pm10_all_days,
+        'pm25_daily_all': pm25_all_days,
+        'pm25_aqi_daily_all': pm25_aqi_all_days,
       };
     }
   }
 
-  throw Exception('Failed to fetch data. HTTP Status Code: ${response.statusCode}');
+  throw Exception(
+      'Failed to fetch data. HTTP Status Code: ${response.statusCode}');
 }
 
 /// Calculates the AQI for a given PM2.5 concentration using EPA breakpoints.
