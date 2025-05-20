@@ -48,15 +48,15 @@ class _HistoryPageState extends State<HistoryPage> {
               ];
             } else if (_selectedRange == '30-Day') {
               charts = [
-                _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red),
-                _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green),
-                _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue),
+                _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red, labelStrategy: _labelEveryWeek),
+                _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green, labelStrategy: _labelEveryWeek),
+                _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue, labelStrategy: _labelEveryWeek),
               ];
             } else if (_selectedRange == '90-Day') {
               charts = [
-                _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red),
-                _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green),
-                _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue),
+                _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red, labelStrategy: _labelTwicePerMonth),
+                _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green, labelStrategy: _labelTwicePerMonth),
+                _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue, labelStrategy: _labelTwicePerMonth),
               ];
             }
 
@@ -105,23 +105,25 @@ class _HistoryPageState extends State<HistoryPage> {
         int index = value.toInt();
         if (index >= 0 && index < data.length) {
           int weekday = index + 1;
-          return Text(weekdayNames[weekday], style: const TextStyle(fontSize: 10));
+          return Text(weekdayNames[weekday], style: const TextStyle(fontSize: 12));
         }
         return const Text('');
       },
     );
   }
 
-  Widget _buildDayChart(List<Map<String, dynamic>> data, String title, Color color) {
+  Widget _buildDayChart(List<Map<String, dynamic>> data, String title, Color color, {required String Function(int, List<Map<String, dynamic>>) labelStrategy}) {
+    final reversedData = data.reversed.toList();
     return _buildChart(
       title: title,
       color: color,
-      spots: data.asMap().entries.map((entry) =>
+      spots: reversedData.asMap().entries.map((entry) =>
           FlSpot(entry.key.toDouble(), (entry.value['value'] as num).toDouble())).toList(),
       bottomTitles: (value) {
         int index = value.toInt();
-        if (index >= 0 && index < data.length) {
-          return Text(data[index]['date'].toString().substring(5), style: const TextStyle(fontSize: 8));
+        if (index >= 0 && index < reversedData.length) {
+          String label = labelStrategy(index, reversedData);
+          return Text(label, style: const TextStyle(fontSize: 12));
         }
         return const Text('');
       },
@@ -188,5 +190,21 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       ),
     );
+  }
+
+  String _labelEveryWeek(int index, List<Map<String, dynamic>> data) {
+    if (index % 7 == 0) {
+      return data[index]['date'].toString().substring(5);
+    }
+    return '';
+  }
+
+  String _labelTwicePerMonth(int index, List<Map<String, dynamic>> data) {
+    final String date = data[index]['date'];
+    final day = int.tryParse(date.substring(8, 10)) ?? 0;
+    if (day == 1 || day == 15) {
+      return date.substring(5);
+    }
+    return '';
   }
 }
