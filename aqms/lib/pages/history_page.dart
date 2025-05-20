@@ -2,9 +2,6 @@ import 'package:aqms/services/fetch_cloud_final.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-/// Displays historical air quality data as line charts,
-/// showing the average value for each day of the week (Mon-Sun),
-/// and the last 30 and 90 calendar days.
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -14,6 +11,7 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   late Future<Map<String, dynamic>> _futureData;
+  String _selectedRange = '7-Day';
 
   @override
   void initState() {
@@ -41,22 +39,53 @@ class _HistoryPageState extends State<HistoryPage> {
           } else {
             final Map<String, dynamic> data = snapshot.data!;
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildWeekdayChart(data['pm25_aqi_history'], 'AQI (7-Day)', Colors.red),
-                  _buildWeekdayChart(data['pm25_history'], 'PM2.5 (7-Day)', Colors.green),
-                  _buildWeekdayChart(data['pm10_history'], 'PM10 (7-Day)', Colors.blue),
+            List<Widget> charts = [];
+            if (_selectedRange == '7-Day') {
+              charts = [
+                _buildWeekdayChart(data['pm25_aqi_history'], 'AQI (7-Day)', Colors.red),
+                _buildWeekdayChart(data['pm25_history'], 'PM2.5 (7-Day)', Colors.green),
+                _buildWeekdayChart(data['pm10_history'], 'PM10 (7-Day)', Colors.blue),
+              ];
+            } else if (_selectedRange == '30-Day') {
+              charts = [
+                _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red),
+                _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green),
+                _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue),
+              ];
+            } else if (_selectedRange == '90-Day') {
+              charts = [
+                _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red),
+                _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green),
+                _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue),
+              ];
+            }
 
-                  _buildDayChart(data['pm25_aqi_30d'], 'AQI (30-Day)', Colors.red),
-                  _buildDayChart(data['pm25_30d'], 'PM2.5 (30-Day)', Colors.green),
-                  _buildDayChart(data['pm10_30d'], 'PM10 (30-Day)', Colors.blue),
-
-                  _buildDayChart(data['pm25_aqi_90d'], 'AQI (90-Day)', Colors.red),
-                  _buildDayChart(data['pm25_90d'], 'PM2.5 (90-Day)', Colors.green),
-                  _buildDayChart(data['pm10_90d'], 'PM10 (90-Day)', Colors.blue),
-                ],
-              ),
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: DropdownButton<String>(
+                    value: _selectedRange,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedRange = newValue!;
+                      });
+                    },
+                    items: <String>['7-Day', '30-Day', '90-Day']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(children: charts),
+                  ),
+                ),
+              ],
             );
           }
         },
